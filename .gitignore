@@ -1,0 +1,9 @@
+/vendor/
+/storage/logs/*.log
+.env
+.env.local
+.DS_Store
+Thumbs.db
+/uploads/*
+!/uploads/.gitkeep
+composer.lock
