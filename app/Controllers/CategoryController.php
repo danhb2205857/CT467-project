@@ -8,24 +8,59 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = (new \App\Models\Category())->getAll();
-        $content = null;
-        include __DIR__ . '/../Views/categories_index.php';
+        $result = (new \App\Models\Category())->getAllCategories();
+        $this->view('category/index', [
+            'categories' => $result['data'] ?? [],
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
     public function insertView() {
-        require_once __DIR__ . '/../Views/categories_add.php';
+        $this->view('category/add');
     }
     public function insert() {
-        // Xử lý thêm thể loại
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'name' => $_POST['name'] ?? ''
+            ];
+            $result = (new \App\Models\Category())->createCategory($data);
+            $this->view('category/add', [
+                'message' => $result['message'],
+                'status' => $result['status']
+            ]);
+        } else {
+            $this->view('category/add');
+        }
     }
     public function edit($id) {
-        $category = (new Category())->select('SELECT * FROM categories WHERE id = ?', [$id], true);
-        require_once __DIR__ . '/../Views/categories_edit.php';
+        $result = (new Category())->getCategoryById($id);
+        $this->view('category/edit', [
+            'category' => $result['data'] ?? null,
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
     public function update($id) {
-        // Xử lý cập nhật thể loại
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'name' => $_POST['name'] ?? ''
+            ];
+            $result = (new \App\Models\Category())->updateCategory($id, $data);
+            $category = (new \App\Models\Category())->getCategoryById($id);
+            $this->view('category/edit', [
+                'category' => $category['data'] ?? null,
+                'message' => $result['message'],
+                'status' => $result['status']
+            ]);
+        }
     }
     public function delete($id) {
-        // Xử lý xóa thể loại
+        $result = (new \App\Models\Category())->deleteCategory($id);
+        $categories = (new \App\Models\Category())->getAllCategories();
+        $this->view('category/index', [
+            'categories' => $categories['data'] ?? [],
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
 }

@@ -8,17 +8,17 @@ class BookController extends Controller
 {
     public function index()
     {
-        $sql = 'SELECT b.*, a.name as author_name, c.name as category_name FROM books b
-                LEFT JOIN authors a ON b.author_id = a.id
-                LEFT JOIN categories c ON b.category_id = c.id';
-        $books = (new \App\Models\Book())->select($sql);
-        $content = null;
-        include __DIR__ . '/../Views/books_index.php';
+        $result = (new \App\Models\Book())->getAllBooks();
+        $this->view('book/index', [
+            'books' => $result['data'] ?? [],
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
 
     public function addView()
     {
-        $this->view('books_add');
+        $this->view('book/add');
     }
 
     public function add()
@@ -32,15 +32,24 @@ class BookController extends Controller
                 'publisher' => $_POST['publisher'] ?? '',
                 'quantity' => $_POST['quantity'] ?? 0,
             ];
-            (new Book())->create($data);
-            $this->redirect('/books');
+            $result = (new Book())->createBook($data);
+            $this->view('book/add', [
+                'message' => $result['message'],
+                'status' => $result['status']
+            ]);
+        } else {
+            $this->view('book/add');
         }
     }
 
     public function editView($id)
     {
-        $book = (new Book())->getById($id);
-        $this->view('books_edit', ['book' => $book]);
+        $result = (new Book())->getBookById($id);
+        $this->view('book/edit', [
+            'book' => $result['data'] ?? null,
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
 
     public function edit($id)
@@ -54,14 +63,24 @@ class BookController extends Controller
                 'publisher' => $_POST['publisher'] ?? '',
                 'quantity' => $_POST['quantity'] ?? 0,
             ];
-            (new Book())->updateById($id, $data);
-            $this->redirect('/books');
+            $result = (new Book())->updateBook($id, $data);
+            $book = (new Book())->getBookById($id);
+            $this->view('book/edit', [
+                'book' => $book['data'] ?? null,
+                'message' => $result['message'],
+                'status' => $result['status']
+            ]);
         }
     }
 
     public function delete($id)
     {
-        (new Book())->deleteById($id);
-        $this->redirect('/books');
+        $result = (new Book())->deleteBook($id);
+        $books = (new Book())->getAllBooks();
+        $this->view('book/index', [
+            'books' => $books['data'] ?? [],
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
 }

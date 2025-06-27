@@ -8,29 +8,63 @@ class ReturnSlipController extends Controller
 {
     public function index()
     {
-        $sql = 'SELECT rs.*, r.name as reader_name, b.title as book_title FROM return_slips rs
-                LEFT JOIN borrow_slip_details bsd ON rs.borrow_slip_detail_id = bsd.id
-                LEFT JOIN borrow_slips bs ON bsd.borrow_slip_id = bs.id
-                LEFT JOIN readers r ON bs.reader_id = r.id
-                LEFT JOIN books b ON bsd.book_id = b.id';
-        $returnslips = (new \App\Models\ReturnSlip())->select($sql);
-        $content = null;
-        include __DIR__ . '/../Views/returnslips_index.php';
+        $result = (new \App\Models\ReturnSlip())->getAllReturnSlips();
+        $this->view('returnslip/index', [
+            'returnslips' => $result['data'] ?? [],
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
     public function insertView() {
-        require_once __DIR__ . '/../Views/returnslips_add.php';
+        $this->view('returnslip/add');
     }
     public function insert() {
-        // Xử lý thêm phiếu trả
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'borrow_slip_detail_id' => $_POST['borrow_slip_detail_id'] ?? '',
+                'return_date' => $_POST['return_date'] ?? '',
+                'fine' => $_POST['fine'] ?? 0
+            ];
+            $result = (new \App\Models\ReturnSlip())->createReturnSlip($data);
+            $this->view('returnslip/add', [
+                'message' => $result['message'],
+                'status' => $result['status']
+            ]);
+        } else {
+            $this->view('returnslip/add');
+        }
     }
     public function edit($id) {
-        $slip = (new ReturnSlip())->select('SELECT * FROM return_slips WHERE id = ?', [$id], true);
-        require_once __DIR__ . '/../Views/returnslips_edit.php';
+        $result = (new ReturnSlip())->getReturnSlipById($id);
+        $this->view('returnslip/edit', [
+            'slip' => $result['data'] ?? null,
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
     public function update($id) {
-        // Xử lý cập nhật phiếu trả
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'borrow_slip_detail_id' => $_POST['borrow_slip_detail_id'] ?? '',
+                'return_date' => $_POST['return_date'] ?? '',
+                'fine' => $_POST['fine'] ?? 0
+            ];
+            $result = (new \App\Models\ReturnSlip())->updateReturnSlip($id, $data);
+            $slip = (new \App\Models\ReturnSlip())->getReturnSlipById($id);
+            $this->view('returnslip/edit', [
+                'slip' => $slip['data'] ?? null,
+                'message' => $result['message'],
+                'status' => $result['status']
+            ]);
+        }
     }
     public function delete($id) {
-        // Xử lý xóa phiếu trả
+        $result = (new \App\Models\ReturnSlip())->deleteReturnSlip($id);
+        $returnslips = (new \App\Models\ReturnSlip())->getAllReturnSlips();
+        $this->view('returnslip/index', [
+            'returnslips' => $returnslips['data'] ?? [],
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
 }

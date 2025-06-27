@@ -11,18 +11,17 @@ class BorrowSlipController extends Controller
         $sql = 'SELECT bs.*, r.name as reader_name FROM borrow_slips bs
                 LEFT JOIN readers r ON bs.reader_id = r.id';
         $borrowslips = (new \App\Models\BorrowSlip())->select($sql);
-        $content = null;
-        include __DIR__ . '/../Views/borrowslips_index.php';
+        $this->view('borrowslip/index', ['borrowslips' => $borrowslips]);
     }
     public function insertView() {
-        require_once __DIR__ . '/../Views/borrowslips_add.php';
+        $this->view('borrowslip/add');
     }
     public function insert() {
         // Xử lý thêm phiếu mượn
     }
     public function edit($id) {
         $slip = (new BorrowSlip())->select('SELECT * FROM borrow_slips WHERE id = ?', [$id], true);
-        require_once __DIR__ . '/../Views/borrowslips_edit.php';
+        $this->view('borrowslip/edit', ['slip' => $slip]);
     }
     public function update($id) {
         // Xử lý cập nhật phiếu mượn
