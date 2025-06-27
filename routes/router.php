@@ -10,60 +10,54 @@ $router->get('/register', 'UserAuthController@showRegister');
 $router->post('/register', 'UserAuthController@register');
 $router->post('/logout', 'UserAuthController@logout');
 
-// Category routes (Public)
+// Books
+$router->get('/books', 'BookController@index');
+$router->get('/books/add', 'BookController@addView');
+$router->post('/books', 'BookController@add');
+$router->get('/books/edit/{id}', 'BookController@editView');
+$router->post('/books/{id}', 'BookController@edit');
+$router->get('/books/delete/{id}', 'BookController@delete');
+
+// Authors
+$router->get('/authors', 'AuthorController@index');
+$router->get('/authors/add', 'AuthorController@addView');
+$router->post('/authors', 'AuthorController@add');
+$router->get('/authors/edit/{id}', 'AuthorController@editView');
+$router->post('/authors/{id}', 'AuthorController@edit');
+$router->get('/authors/delete/{id}', 'AuthorController@delete');
+
+// Categories
 $router->get('/categories', 'CategoryController@index');
-$router->get('/categories/{id}', 'CategoryController@show');
+$router->get('/categories/add', 'CategoryController@addView');
+$router->post('/categories', 'CategoryController@add');
+$router->get('/categories/edit/{id}', 'CategoryController@editView');
+$router->post('/categories/{id}', 'CategoryController@edit');
+$router->get('/categories/delete/{id}', 'CategoryController@delete');
 
-// Story routes (Public)
-$router->get('/stories', 'StoryController@index');
-$router->get('/stories/{id}', 'StoryController@show');
-$router->get('/comic-detail/{id}', 'StoryController@show'); // Backward compatibility
+// Readers
+$router->get('/readers', 'ReaderController@index');
+$router->get('/readers/add', 'ReaderController@addView');
+$router->post('/readers', 'ReaderController@add');
+$router->get('/readers/edit/{id}', 'ReaderController@editView');
+$router->post('/readers/{id}', 'ReaderController@edit');
+$router->get('/readers/delete/{id}', 'ReaderController@delete');
 
-// Chapter routes (Public)
-$router->get('/chapters/{id}', 'ChapterController@show');
-$router->get('/chapter-detail/{id}', 'ChapterController@show');
+// Borrow Slips
+$router->get('/borrowslips', 'BorrowSlipController@index');
+$router->get('/borrowslips/add', 'BorrowSlipController@addView');
+$router->post('/borrowslips', 'BorrowSlipController@add');
+$router->get('/borrowslips/edit/{id}', 'BorrowSlipController@editView');
+$router->post('/borrowslips/{id}', 'BorrowSlipController@edit');
+$router->get('/borrowslips/delete/{id}', 'BorrowSlipController@delete');
 
-// User pages
-$router->get('/contact', 'PageController@contact');
-$router->get('/history', 'PageController@history');
-$router->get('/favorites', 'PageController@favorites');
+// Return Slips
+$router->get('/returnslips', 'ReturnSlipController@index');
+$router->get('/returnslips/add', 'ReturnSlipController@addView');
+$router->post('/returnslips', 'ReturnSlipController@add');
+$router->get('/returnslips/edit/{id}', 'ReturnSlipController@editView');
+$router->post('/returnslips/{id}', 'ReturnSlipController@edit');
+$router->get('/returnslips/delete/{id}', 'ReturnSlipController@delete');
 
-// ======================================== ADMIN ROUTES ========================================
-
-// Admin Authentication
-$router->get('/admin', 'AdminController@index');
-$router->get('/admin/login', 'AdminController@showLogin');
-$router->post('/admin/login', 'AdminController@login');
-$router->get('/admin/logout', 'AdminController@logout');
-
-// Admin Authors
-$router->get('/admin/authors', 'AdminAuthorController@index');
-$router->get('/admin/authors/add', 'AdminAuthorController@insertView');
-$router->post('/admin/authors', 'AdminAuthorController@insert');
-$router->get('/admin/authors/edit/{id}', 'AdminAuthorController@edit');
-$router->post('/admin/authors/{id}', 'AdminAuthorController@update');
-$router->delete('/admin/authors/{id}', 'AdminAuthorController@delete');
-
-// Admin Categories  
-$router->get('/admin/categories', 'AdminCategoryController@index');
-$router->get('/admin/categories/add', 'AdminCategoryController@insertView');
-$router->post('/admin/categories', 'AdminCategoryController@insert');
-$router->get('/admin/categories/edit/{id}', 'AdminCategoryController@edit');
-$router->post('/admin/categories/{id}', 'AdminCategoryController@update');
-$router->delete('/admin/categories/{id}', 'AdminCategoryController@delete');
-
-// Admin Stories
-$router->get('/admin/stories', 'AdminStoryController@index');
-$router->get('/admin/stories/add', 'AdminStoryController@insertView');
-$router->post('/admin/stories', 'AdminStoryController@insert');
-$router->get('/admin/stories/edit/{id}', 'AdminStoryController@edit');
-$router->post('/admin/stories/{id}', 'AdminStoryController@update');
-$router->delete('/admin/stories/{id}', 'AdminStoryController@delete');
-
-// Admin Chapters
-$router->get('/admin/chapters', 'ChapterController@adminIndex');
-$router->get('/admin/chapters/create', 'ChapterController@create');
-$router->post('/admin/chapters', 'ChapterController@store');
-$router->get('/admin/chapters/{id}/edit', 'ChapterController@edit');
-$router->post('/admin/chapters/{id}', 'ChapterController@update');
-$router->delete('/admin/chapters/{id}', 'ChapterController@delete');
+// Statistics
+$router->get('/statistics', 'StatisticsController@index');
+$router->get('/statistics/export', 'StatisticsController@exportExcel');

@@ -18,7 +18,7 @@ Database::getInstance($config['database']);
 $router = new Router();
 
 // Define routes
-require_once __DIR__ . '/../routes/web.php';
+require_once __DIR__ . '/../routes/router.php';
 
 // Handle request
 $router->dispatch();

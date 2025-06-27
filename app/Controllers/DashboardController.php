@@ -4,7 +4,7 @@ namespace App\Controllers;
 use App\Core\Session;
 use App\Models\Admin;
 
-class AdminController extends BaseAdminController
+class DashboardController extends Controller
 {
     protected $requireAuth = false;
     

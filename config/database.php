@@ -1,9 +1,10 @@
 <?php
 return [
-    'host' => 'localhost',
-    'dbname' => 'project_ct275',
-    'username' => 'postgres',
-    'password' => '123456',
+    'driver' => 'mysql',
+    'host' => '127.0.0.1',
+    'dbname' => 'library_management',
+    'username' => 'root',
+    'password' => 'Congdanh@1168',
     'charset' => 'utf8mb4',
     'options' => [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

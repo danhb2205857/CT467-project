@@ -12,7 +12,7 @@ class Database
     private function __construct($config)
     {
         try {
-            $dsn = "pgsql:host={$config['host']};dbname={$config['dbname']}";
+            $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
             $this->connection = new PDO($dsn, $config['username'], $config['password'], $config['options']);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
