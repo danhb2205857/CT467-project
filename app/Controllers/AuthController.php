@@ -12,7 +12,7 @@ class AuthController extends Controller
     public function index()
     {
         Session::checkSession('admin');
-        $this->view('book/index');
+        $this->view('dashboard');
     }
 
     public function showLogin()
@@ -25,8 +25,8 @@ class AuthController extends Controller
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['adminEmail'] ?? '';
-            $password = $_POST['adminPass'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
 
             if (empty($email) || empty($password)) {
                 $error = "Vui lòng nhập đầy đủ thông tin";
@@ -49,13 +49,13 @@ class AuthController extends Controller
                 $this->view('auth/login', ['error' => $error]);
             }
         } else {
-            $this->redirect('/auth/login');
+            $this->redirect('/login');
         }
     }
 
     public function logout()
     {
         Session::destroy();
-        $this->redirect('/auth/login');
+        $this->redirect('/login');
     }
 }

@@ -13,19 +13,19 @@ class Admin extends Model
     }
 
 
-    public function login_admin($adminEmail, $adminPass)
+    public function login_admin($email, $password)
     {
-        $adminEmail = $this->fm->validation($adminEmail);
-        $adminPass = $this->fm->validation($adminPass);
+        $email = $this->fm->validation($email);
+        $password = $this->fm->validation($password);
 
-        if (empty($adminEmail) || empty($adminPass)) {
+        if (empty($email) || empty($password)) {
             return 'Tài khoản hoặc mật khẩu trống';
         }
 
         $query = "SELECT * FROM admins WHERE email = ?";
-        $result = $this->select($query, [$adminEmail]);
+        $result = $this->select($query, [$email], true);
 
-        if ($result && $adminPass == $result['password']) {
+        if ($result && $password == $result['password']) {
             $res = [
                 'status' => true,
                 'data' => $result

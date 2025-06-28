@@ -1,13 +1,12 @@
 <?php
 
 // Home page
-$router->get('/', 'HomeController@index');
+$router->get('/', 'DashboardController@index');
+$router->get('/export', 'DashboardController@exportExcel');
 
 // Authentication routes
 $router->get('/login', 'AuthController@showLogin');
 $router->post('/login', 'AuthController@login');
-$router->get('/register', 'AuthController@showRegister');
-$router->post('/register', 'AuthController@register');
 $router->post('/logout', 'AuthController@logout');
 $router->get('/logout', 'AuthController@logout');
 
@@ -59,6 +58,3 @@ $router->get('/returnslips/edit/{id}', 'ReturnSlipController@editView');
 $router->post('/returnslips/{id}', 'ReturnSlipController@edit');
 $router->get('/returnslips/delete/{id}', 'ReturnSlipController@delete');
 
-// Statistics
-$router->get('/dashboard', 'DashboardController@index');
-$router->get('/dashboard/export', 'DashboardController@exportExcel');
