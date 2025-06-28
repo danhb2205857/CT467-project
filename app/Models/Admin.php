@@ -22,8 +22,8 @@ class Admin extends Model
             return 'Tài khoản hoặc mật khẩu trống';
         }
 
-        $query = "SELECT * FROM users WHERE email = ? AND role = ?";
-        $result = $this->select($query, [$adminEmail, $this->index['admin']], true);
+        $query = "SELECT * FROM admins WHERE email = ?";
+        $result = $this->select($query, [$adminEmail]);
 
         if ($result && $adminPass == $result['password']) {
             $res = [

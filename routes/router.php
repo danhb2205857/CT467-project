@@ -4,11 +4,12 @@
 $router->get('/', 'HomeController@index');
 
 // Authentication routes
-$router->get('/login', 'UserAuthController@showLogin');
-$router->post('/login', 'UserAuthController@login');
-$router->get('/register', 'UserAuthController@showRegister');
-$router->post('/register', 'UserAuthController@register');
-$router->post('/logout', 'UserAuthController@logout');
+$router->get('/login', 'AuthController@showLogin');
+$router->post('/login', 'AuthController@login');
+$router->get('/register', 'AuthController@showRegister');
+$router->post('/register', 'AuthController@register');
+$router->post('/logout', 'AuthController@logout');
+$router->get('/logout', 'AuthController@logout');
 
 // Books
 $router->get('/books', 'BookController@index');

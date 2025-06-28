@@ -21,7 +21,7 @@
         <a class="navbar-brand" href="/statistics">📚 Quản trị Thư viện</a>
         <div class="d-flex align-items-center">
             <span class="text-white me-3">Xin chào, Admin</span>
-            <a href="/admin/logout" class="btn btn-outline-light btn-sm">Đăng xuất</a>
+            <a href="/logout" class="btn btn-outline-light btn-sm">Đăng xuất</a>
         </div>
     </div>
 </header>

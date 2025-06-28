@@ -2,30 +2,25 @@
 namespace App\Controllers;
 
 use App\Core\Session;
+use App\Core\Controller;
 use App\Models\Admin;
 
 
-class AuthController extends BaseAuthController
+class AuthController extends Controller
 {
-    protected $requireAuth = false;
-    
-    public function __construct()
-    {
-
-    }
 
     public function index()
     {
         Session::checkSession('admin');
-        $this->adminView('index');
+        $this->view('book/index');
     }
 
     public function showLogin()
     {
         if (Session::isLoggedIn()) {
-            $this->redirect('/admin');
+            $this->redirect('/dashboard');
         }
-        $this->view('admin/login');
+        $this->view('auth/login');
     }
     public function login()
     {
@@ -35,7 +30,7 @@ class AuthController extends BaseAuthController
 
             if (empty($email) || empty($password)) {
                 $error = "Vui lòng nhập đầy đủ thông tin";
-                $this->view('admin/login', ['error' => $error]);
+                $this->view('auth/login', ['error' => $error]);
                 return;
             }
 
@@ -48,19 +43,19 @@ class AuthController extends BaseAuthController
                 Session::set("adminAvatar", $loginResult['data']['avatar']);
                 Session::set("adminEmail", $loginResult['data']['email']);
                 Session::set("adminName", $loginResult['data']['name']);
-                $this->redirect('/admin');
+                $this->redirect('/dashboard');
             } else {
                 $error = "Email hoặc mật khẩu không đúng";
-                $this->view('admin/login', ['error' => $error]);
+                $this->view('auth/login', ['error' => $error]);
             }
         } else {
-            $this->redirect('/admin/login');
+            $this->redirect('/auth/login');
         }
     }
 
     public function logout()
     {
         Session::destroy();
-        $this->redirect('/admin/login');
+        $this->redirect('/auth/login');
     }
 }
