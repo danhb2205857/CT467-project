@@ -1,10 +1,12 @@
 <?php ob_start(); ?>
 <div class="container-fluid">
     <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Dashboard</h2>
-    <div class="alert alert-info mb-4" style="background: #e3f2fd; color: #1565c0;">
-        <strong>Chào mừng Admin Panel</strong><br>
-        Chào mừng bạn đến với trang quản trị. Bạn có thể quản lý toàn bộ website từ đây.
-    </div>
+    <?php if (!empty($message)): ?>
+        <div class="alert alert-<?= !empty($status) && $status ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($message) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
     <div class="row g-4">
         <div class="col-md-3">
             <div class="card shadow-sm text-center" style="background: #ede7f6; border: none;">
