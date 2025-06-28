@@ -30,7 +30,7 @@
         <nav class="col-md-2 d-none d-md-block sidebar py-4">
             <h4 class="text-center mb-4">Quản trị</h4>
             <ul class="nav flex-column">
-                <li class="nav-item"><a class="nav-link" href="/statistics">Thống kê</a></li>
+                <li class="nav-item"><a class="nav-link" href="/dashboard">Thống kê</a></li>
                 <li class="nav-item"><a class="nav-link" href="/books">Sách</a></li>
                 <li class="nav-item"><a class="nav-link" href="/authors">Tác giả</a></li>
                 <li class="nav-item"><a class="nav-link" href="/categories">Thể loại</a></li>
