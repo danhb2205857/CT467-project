@@ -4,7 +4,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Session;
 
-abstract class Controller extends Controller
+class BaseAuthController extends Controller
 {
     protected $requireAuth = true;
     
@@ -19,18 +19,6 @@ abstract class Controller extends Controller
     {
         Session::checkSession('admin');
     }
-    
-
-    // protected function checkPermission($permission = null)
-    // {
-    //     // Có thể mở rộng để kiểm tra quyền cụ thể
-    //     $this->checkAuthentication();
-        
-    //     // Thêm logic kiểm tra quyền nếu cần
-    //     if ($permission) {
-    //         // Logic kiểm tra quyền cụ thể
-    //     }
-    // }
 
     protected function getCurrentAdmin()
     {

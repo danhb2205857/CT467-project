@@ -4,11 +4,18 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Models\Book;
 
-class BookController extends Controller
+class BookController extends BaseAuthController
 {
+    private $book;
+
+    public function __construct()
+    {
+        $this->book = new Book();
+    }
+
     public function index()
     {
-        $result = (new \App\Models\Book())->getAllBooks();
+        $result = $this->book->getAllBooks();
         $this->view('book/index', [
             'books' => $result['data'] ?? [],
             'message' => $result['message'],
@@ -32,7 +39,7 @@ class BookController extends Controller
                 'publisher' => $_POST['publisher'] ?? '',
                 'quantity' => $_POST['quantity'] ?? 0,
             ];
-            $result = (new Book())->createBook($data);
+            $result = $this->book->createBook($data);
             $this->view('book/add', [
                 'message' => $result['message'],
                 'status' => $result['status']
@@ -44,7 +51,7 @@ class BookController extends Controller
 
     public function editView($id)
     {
-        $result = (new Book())->getBookById($id);
+        $result = $this->book->getBookById($id);
         $this->view('book/edit', [
             'book' => $result['data'] ?? null,
             'message' => $result['message'],
@@ -63,8 +70,8 @@ class BookController extends Controller
                 'publisher' => $_POST['publisher'] ?? '',
                 'quantity' => $_POST['quantity'] ?? 0,
             ];
-            $result = (new Book())->updateBook($id, $data);
-            $book = (new Book())->getBookById($id);
+            $result = $this->book->updateBook($id, $data);
+            $book = $this->book->getBookById($id);
             $this->view('book/edit', [
                 'book' => $book['data'] ?? null,
                 'message' => $result['message'],
@@ -75,8 +82,8 @@ class BookController extends Controller
 
     public function delete($id)
     {
-        $result = (new Book())->deleteBook($id);
-        $books = (new Book())->getAllBooks();
+        $result = $this->book->deleteBook($id);
+        $books = $this->book->getAllBooks();
         $this->view('book/index', [
             'books' => $books['data'] ?? [],
             'message' => $result['message'],

@@ -6,9 +6,15 @@ use App\Models\Author;
 
 class AuthorController extends Controller
 {
+    private $author;
+
+    public function __construct()
+    {
+        $this->author = new Author();
+    }
     public function index()
     {
-        $result = (new \App\Models\Author())->getAllAuthors();
+        $result = $this->author->getAllAuthors();
         $this->view('author/index', [
             'authors' => $result['data'] ?? [],
             'message' => $result['message'],
@@ -23,7 +29,7 @@ class AuthorController extends Controller
             $data = [
                 'name' => $_POST['name'] ?? ''
             ];
-            $result = (new \App\Models\Author())->createAuthor($data);
+            $result = $this->author->createAuthor($data);
             $this->view('author/add', [
                 'message' => $result['message'],
                 'status' => $result['status']
@@ -33,7 +39,7 @@ class AuthorController extends Controller
         }
     }
     public function edit($id) {
-        $result = (new Author())->getAuthorById($id);
+        $result = $this->author->getAuthorById($id);
         $this->view('author/edit', [
             'author' => $result['data'] ?? null,
             'message' => $result['message'],
@@ -45,8 +51,8 @@ class AuthorController extends Controller
             $data = [
                 'name' => $_POST['name'] ?? ''
             ];
-            $result = (new \App\Models\Author())->updateAuthor($id, $data);
-            $author = (new \App\Models\Author())->getAuthorById($id);
+            $result = $this->author->updateAuthor($id, $data);
+            $author = $this->author->getAuthorById($id);
             $this->view('author/edit', [
                 'author' => $author['data'] ?? null,
                 'message' => $result['message'],
@@ -55,8 +61,8 @@ class AuthorController extends Controller
         }
     }
     public function delete($id) {
-        $result = (new \App\Models\Author())->deleteAuthor($id);
-        $authors = (new \App\Models\Author())->getAllAuthors();
+        $result = $this->author->deleteAuthor($id);
+        $authors = $this->author->getAllAuthors();
         $this->view('author/index', [
             'authors' => $authors['data'] ?? [],
             'message' => $result['message'],

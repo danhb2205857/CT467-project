@@ -6,9 +6,15 @@ use App\Models\ReturnSlip;
 
 class ReturnSlipController extends Controller
 {
+    private $returnSlip;
+
+    public function __construct()
+    {
+        $this->returnSlip = new ReturnSlip();
+    }
     public function index()
     {
-        $result = (new \App\Models\ReturnSlip())->getAllReturnSlips();
+        $result = $this->returnSlip->getAllReturnSlips();
         $this->view('returnslip/index', [
             'returnslips' => $result['data'] ?? [],
             'message' => $result['message'],
@@ -25,7 +31,7 @@ class ReturnSlipController extends Controller
                 'return_date' => $_POST['return_date'] ?? '',
                 'fine' => $_POST['fine'] ?? 0
             ];
-            $result = (new \App\Models\ReturnSlip())->createReturnSlip($data);
+            $result = $this->returnSlip->createReturnSlip($data);
             $this->view('returnslip/add', [
                 'message' => $result['message'],
                 'status' => $result['status']
@@ -35,7 +41,7 @@ class ReturnSlipController extends Controller
         }
     }
     public function edit($id) {
-        $result = (new ReturnSlip())->getReturnSlipById($id);
+        $result = $this->returnSlip->getReturnSlipById($id);
         $this->view('returnslip/edit', [
             'slip' => $result['data'] ?? null,
             'message' => $result['message'],
@@ -49,8 +55,8 @@ class ReturnSlipController extends Controller
                 'return_date' => $_POST['return_date'] ?? '',
                 'fine' => $_POST['fine'] ?? 0
             ];
-            $result = (new \App\Models\ReturnSlip())->updateReturnSlip($id, $data);
-            $slip = (new \App\Models\ReturnSlip())->getReturnSlipById($id);
+            $result = $this->returnSlip->updateReturnSlip($id, $data);
+            $slip = $this->returnSlip->getReturnSlipById($id);
             $this->view('returnslip/edit', [
                 'slip' => $slip['data'] ?? null,
                 'message' => $result['message'],
@@ -59,8 +65,8 @@ class ReturnSlipController extends Controller
         }
     }
     public function delete($id) {
-        $result = (new \App\Models\ReturnSlip())->deleteReturnSlip($id);
-        $returnslips = (new \App\Models\ReturnSlip())->getAllReturnSlips();
+        $result = $this->returnSlip->deleteReturnSlip($id);
+        $returnslips = $this->returnSlip->getAllReturnSlips();
         $this->view('returnslip/index', [
             'returnslips' => $returnslips['data'] ?? [],
             'message' => $result['message'],

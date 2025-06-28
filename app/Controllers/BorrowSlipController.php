@@ -6,27 +6,73 @@ use App\Models\BorrowSlip;
 
 class BorrowSlipController extends Controller
 {
+    private $borrowSlip;
+
+    public function __construct()
+    {
+        $this->borrowSlip = new BorrowSlip();
+    }
     public function index()
     {
-        $sql = 'SELECT bs.*, r.name as reader_name FROM borrow_slips bs
-                LEFT JOIN readers r ON bs.reader_id = r.id';
-        $borrowslips = (new \App\Models\BorrowSlip())->select($sql);
-        $this->view('borrowslip/index', ['borrowslips' => $borrowslips]);
+        $result = $this->borrowSlip->getAllBorrowSlips();
+        $this->view('borrowslip/index', [
+            'borrowslips' => $result['data'] ?? [],
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
     public function insertView() {
         $this->view('borrowslip/add');
     }
     public function insert() {
-        // Xử lý thêm phiếu mượn
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'reader_id' => $_POST['reader_id'] ?? '',
+                'borrow_date' => $_POST['borrow_date'] ?? '',
+                'return_date' => $_POST['return_date'] ?? '',
+                'status' => $_POST['status'] ?? ''
+            ];
+            $result = $this->borrowSlip->createBorrowSlip($data);
+            $this->view('borrowslip/add', [
+                'message' => $result['message'],
+                'status' => $result['status']
+            ]);
+        } else {
+            $this->view('borrowslip/add');
+        }
     }
     public function edit($id) {
-        $slip = (new BorrowSlip())->select('SELECT * FROM borrow_slips WHERE id = ?', [$id], true);
-        $this->view('borrowslip/edit', ['slip' => $slip]);
+        $result = $this->borrowSlip->getBorrowSlipById($id);
+        $this->view('borrowslip/edit', [
+            'slip' => $result['data'] ?? null,
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
     public function update($id) {
-        // Xử lý cập nhật phiếu mượn
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'reader_id' => $_POST['reader_id'] ?? '',
+                'borrow_date' => $_POST['borrow_date'] ?? '',
+                'return_date' => $_POST['return_date'] ?? '',
+                'status' => $_POST['status'] ?? ''
+            ];
+            $result = $this->borrowSlip->updateBorrowSlip($id, $data);
+            $slip = $this->borrowSlip->getBorrowSlipById($id);
+            $this->view('borrowslip/edit', [
+                'slip' => $slip['data'] ?? null,
+                'message' => $result['message'],
+                'status' => $result['status']
+            ]);
+        }
     }
     public function delete($id) {
-        // Xử lý xóa phiếu mượn
+        $result = $this->borrowSlip->deleteBorrowSlip($id);
+        $borrowslips = $this->borrowSlip->getAllBorrowSlips();
+        $this->view('borrowslip/index', [
+            'borrowslips' => $borrowslips['data'] ?? [],
+            'message' => $result['message'],
+            'status' => $result['status']
+        ]);
     }
 }

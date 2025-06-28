@@ -59,5 +59,5 @@ $router->post('/returnslips/{id}', 'ReturnSlipController@edit');
 $router->get('/returnslips/delete/{id}', 'ReturnSlipController@delete');
 
 // Statistics
-$router->get('/statistics', 'StatisticsController@index');
-$router->get('/statistics/export', 'StatisticsController@exportExcel');
+$router->get('/dashboard', 'DashboardController@index');
+$router->get('/dashboard/export', 'DashboardController@exportExcel');

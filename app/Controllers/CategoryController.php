@@ -6,9 +6,15 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
+    private $category;
+
+    public function __construct()
+    {
+        $this->category = new Category();
+    }
     public function index()
     {
-        $result = (new \App\Models\Category())->getAllCategories();
+        $result = $this->category->getAllCategories();
         $this->view('category/index', [
             'categories' => $result['data'] ?? [],
             'message' => $result['message'],
@@ -23,7 +29,7 @@ class CategoryController extends Controller
             $data = [
                 'name' => $_POST['name'] ?? ''
             ];
-            $result = (new \App\Models\Category())->createCategory($data);
+            $result = $this->category->createCategory($data);
             $this->view('category/add', [
                 'message' => $result['message'],
                 'status' => $result['status']
@@ -33,7 +39,7 @@ class CategoryController extends Controller
         }
     }
     public function edit($id) {
-        $result = (new Category())->getCategoryById($id);
+        $result = $this->category->getCategoryById($id);
         $this->view('category/edit', [
             'category' => $result['data'] ?? null,
             'message' => $result['message'],
@@ -45,8 +51,8 @@ class CategoryController extends Controller
             $data = [
                 'name' => $_POST['name'] ?? ''
             ];
-            $result = (new \App\Models\Category())->updateCategory($id, $data);
-            $category = (new \App\Models\Category())->getCategoryById($id);
+            $result = $this->category->updateCategory($id, $data);
+            $category = $this->category->getCategoryById($id);
             $this->view('category/edit', [
                 'category' => $category['data'] ?? null,
                 'message' => $result['message'],
@@ -55,8 +61,8 @@ class CategoryController extends Controller
         }
     }
     public function delete($id) {
-        $result = (new \App\Models\Category())->deleteCategory($id);
-        $categories = (new \App\Models\Category())->getAllCategories();
+        $result = $this->category->deleteCategory($id);
+        $categories = $this->category->getAllCategories();
         $this->view('category/index', [
             'categories' => $categories['data'] ?? [],
             'message' => $result['message'],

@@ -6,9 +6,15 @@ use App\Models\Reader;
 
 class ReaderController extends Controller
 {
+    private $reader;
+
+    public function __construct()
+    {
+        $this->reader = new Reader();
+    }
     public function index()
     {
-        $result = (new \App\Models\Reader())->getAllReaders();
+        $result = $this->reader->getAllReaders();
         $this->view('reader/index', [
             'readers' => $result['data'] ?? [],
             'message' => $result['message'],
@@ -25,7 +31,7 @@ class ReaderController extends Controller
                 'birthday' => $_POST['birthday'] ?? '',
                 'phone' => $_POST['phone'] ?? ''
             ];
-            $result = (new \App\Models\Reader())->createReader($data);
+            $result = $this->reader->createReader($data);
             $this->view('reader/add', [
                 'message' => $result['message'],
                 'status' => $result['status']
@@ -35,7 +41,7 @@ class ReaderController extends Controller
         }
     }
     public function edit($id) {
-        $result = (new Reader())->getReaderById($id);
+        $result = $this->reader->getReaderById($id);
         $this->view('reader/edit', [
             'reader' => $result['data'] ?? null,
             'message' => $result['message'],
@@ -49,8 +55,8 @@ class ReaderController extends Controller
                 'birthday' => $_POST['birthday'] ?? '',
                 'phone' => $_POST['phone'] ?? ''
             ];
-            $result = (new \App\Models\Reader())->updateReader($id, $data);
-            $reader = (new \App\Models\Reader())->getReaderById($id);
+            $result = $this->reader->updateReader($id, $data);
+            $reader = $this->reader->getReaderById($id);
             $this->view('reader/edit', [
                 'reader' => $reader['data'] ?? null,
                 'message' => $result['message'],
@@ -59,8 +65,8 @@ class ReaderController extends Controller
         }
     }
     public function delete($id) {
-        $result = (new \App\Models\Reader())->deleteReader($id);
-        $readers = (new \App\Models\Reader())->getAllReaders();
+        $result = $this->reader->deleteReader($id);
+        $readers = $this->reader->getAllReaders();
         $this->view('reader/index', [
             'readers' => $readers['data'] ?? [],
             'message' => $result['message'],
