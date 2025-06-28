@@ -46,4 +46,4 @@
         <?php endforeach; ?>
     </tbody>
 </table>
-<?php $content = ob_get_clean(); include __DIR__.'/layout.php';
+<?php $content = ob_get_clean(); include __DIR__.'/../layout.php';
