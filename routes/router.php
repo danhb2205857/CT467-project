@@ -11,50 +11,48 @@ $router->post('/logout', 'AuthController@logout');
 $router->get('/logout', 'AuthController@logout');
 
 // Books
-$router->get('/books', 'BookController@index');
-$router->get('/books/add', 'BookController@addView');
-$router->post('/books', 'BookController@add');
-$router->get('/books/edit/{id}', 'BookController@editView');
-$router->post('/books/{id}', 'BookController@edit');
-$router->get('/books/delete/{id}', 'BookController@delete');
+$router->get('/books', 'BooksController@index');
+$router->get('/books/add', 'BooksController@addView');
+$router->post('/books', 'BooksController@add');
+$router->get('/books/edit/{id}', 'BooksController@editView');
+$router->post('/books/{id}', 'BooksController@edit');
+$router->get('/books/delete/{id}', 'BooksController@delete');
 
 // Authors
-$router->get('/authors', 'AuthorController@index');
-$router->get('/authors/add', 'AuthorController@addView');
-$router->post('/authors', 'AuthorController@add');
-$router->get('/authors/edit/{id}', 'AuthorController@editView');
-$router->post('/authors/{id}', 'AuthorController@edit');
-$router->get('/authors/delete/{id}', 'AuthorController@delete');
+$router->get('/authors', 'AuthorsController@index');
+$router->post('/authors', 'AuthorsController@insert');
+$router->post('/authors/{id}', 'AuthorsController@update');
+$router->get('/authors/delete/{id}', 'AuthorsController@delete');
 
 // Categories
-$router->get('/categories', 'CategoryController@index');
-$router->get('/categories/add', 'CategoryController@addView');
-$router->post('/categories', 'CategoryController@add');
-$router->get('/categories/edit/{id}', 'CategoryController@editView');
-$router->post('/categories/{id}', 'CategoryController@edit');
-$router->get('/categories/delete/{id}', 'CategoryController@delete');
+$router->get('/categories', 'CategoriesController@index');
+$router->get('/categories/add', 'CategoriesController@addView');
+$router->post('/categories', 'CategoriesController@add');
+$router->get('/categories/edit/{id}', 'CategoriesController@editView');
+$router->post('/categories/{id}', 'CategoriesController@edit');
+$router->get('/categories/delete/{id}', 'CategoriesController@delete');
 
 // Readers
-$router->get('/readers', 'ReaderController@index');
-$router->get('/readers/add', 'ReaderController@addView');
-$router->post('/readers', 'ReaderController@add');
-$router->get('/readers/edit/{id}', 'ReaderController@editView');
-$router->post('/readers/{id}', 'ReaderController@edit');
-$router->get('/readers/delete/{id}', 'ReaderController@delete');
+$router->get('/readers', 'ReadersController@index');
+$router->get('/readers/add', 'ReadersController@addView');
+$router->post('/readers', 'ReadersController@add');
+$router->get('/readers/edit/{id}', 'ReadersController@editView');
+$router->post('/readers/{id}', 'ReadersController@edit');
+$router->get('/readers/delete/{id}', 'ReadersController@delete');
 
 // Borrow Slips
-$router->get('/borrowslips', 'BorrowSlipController@index');
-$router->get('/borrowslips/add', 'BorrowSlipController@addView');
-$router->post('/borrowslips', 'BorrowSlipController@add');
-$router->get('/borrowslips/edit/{id}', 'BorrowSlipController@editView');
-$router->post('/borrowslips/{id}', 'BorrowSlipController@edit');
-$router->get('/borrowslips/delete/{id}', 'BorrowSlipController@delete');
+$router->get('/borrowslips', 'BorrowSlipsController@index');
+$router->get('/borrowslips/add', 'BorrowSlipsController@addView');
+$router->post('/borrowslips', 'BorrowSlipsController@add');
+$router->get('/borrowslips/edit/{id}', 'BorrowSlipsController@editView');
+$router->post('/borrowslips/{id}', 'BorrowSlipsController@edit');
+$router->get('/borrowslips/delete/{id}', 'BorrowSlipsController@delete');
 
 // Return Slips
-$router->get('/returnslips', 'ReturnSlipController@index');
-$router->get('/returnslips/add', 'ReturnSlipController@addView');
-$router->post('/returnslips', 'ReturnSlipController@add');
-$router->get('/returnslips/edit/{id}', 'ReturnSlipController@editView');
-$router->post('/returnslips/{id}', 'ReturnSlipController@edit');
-$router->get('/returnslips/delete/{id}', 'ReturnSlipController@delete');
+$router->get('/returnslips', 'ReturnSlipsController@index');
+$router->get('/returnslips/add', 'ReturnSlipsController@addView');
+$router->post('/returnslips', 'ReturnSlipsController@add');
+$router->get('/returnslips/edit/{id}', 'ReturnSlipsController@editView');
+$router->post('/returnslips/{id}', 'ReturnSlipsController@edit');
+$router->get('/returnslips/delete/{id}', 'ReturnSlipsController@delete');
 

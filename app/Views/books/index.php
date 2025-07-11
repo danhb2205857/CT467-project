@@ -2,7 +2,7 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Danh sách Sách</h2>
     <div>
-        <a href="/books/add" class="btn btn-yellow me-2">Thêm sách</a>
+        <button class="btn btn-yellow me-2" data-bs-toggle="modal" data-bs-target="#addBookModal">Thêm sách</button>
         <button onclick="window.print()" class="btn btn-outline-secondary me-2">In bảng</button>
         <a href="/books/export-excel" class="btn btn-success">Xuất Excel</a>
     </div>
@@ -39,11 +39,35 @@
             <td><?= htmlspecialchars($book['quantity']) ?></td>
             <td><?= htmlspecialchars($book['available']) ?></td>
             <td>
-                <a href="/books/edit/<?= $book['id'] ?>" class="btn btn-sm btn-primary">Sửa</a>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editBookModal"
+                    data-id="<?= $book['id'] ?>" data-title="<?= htmlspecialchars($book['title']) ?>"
+                    data-author_id="<?= htmlspecialchars($book['author_id']) ?>" data-category_id="<?= htmlspecialchars($book['category_id']) ?>"
+                    data-publish_year="<?= htmlspecialchars($book['publish_year']) ?>" data-publisher="<?= htmlspecialchars($book['publisher']) ?>"
+                    data-quantity="<?= htmlspecialchars($book['quantity']) ?>">
+                    Sửa
+                </button>
                 <a href="/books/delete/<?= $book['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Xác nhận xóa?')">Xóa</a>
             </td>
         </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
-<?php $content = ob_get_clean(); include __DIR__.'/../layout.php';
+<?php include_once __DIR__ . '/../components/books_modal.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var editModal = document.getElementById('editBookModal');
+    if (editModal) {
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            editModal.querySelector('#editBookId').value = button.getAttribute('data-id');
+            editModal.querySelector('#editBookTitle').value = button.getAttribute('data-title');
+            editModal.querySelector('#editBookAuthor').value = button.getAttribute('data-author_id');
+            editModal.querySelector('#editBookCategory').value = button.getAttribute('data-category_id');
+            editModal.querySelector('#editPublishYear').value = button.getAttribute('data-publish_year');
+            editModal.querySelector('#editPublisher').value = button.getAttribute('data-publisher');
+            editModal.querySelector('#editQuantity').value = button.getAttribute('data-quantity');
+        });
+    }
+});
+</script>
+<?php $content = ob_get_clean(); include __DIR__.'/../layout.php'; ?>

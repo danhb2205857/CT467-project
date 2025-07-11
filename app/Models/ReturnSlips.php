@@ -3,142 +3,137 @@ namespace App\Models;
 
 use App\Core\Model;
 
-class Book extends Model
+class ReturnSlips extends Model
 {
     public $id;
-    public $author_id;
-    public $category_id;
-    public $title;
-    public $publish_year;
-    public $publisher;
-    public $quantity;
+    public $borrow_slip_detail_id;
+    public $return_date;
+    public $fine;
     
-    protected $table = 'books';
+    protected $table = 'return_slips';
     protected $primaryKey = 'id';
 
     public function __construct($data = [])
     {
         parent::__construct();
         $this->id = $data['id'] ?? null;
-        $this->author_id = $data['author_id'] ?? null;
-        $this->category_id = $data['category_id'] ?? null;
-        $this->title = $data['title'] ?? '';
-        $this->publish_year = $data['publish_year'] ?? '';
-        $this->publisher = $data['publisher'] ?? '';
-        $this->quantity = $data['quantity'] ?? 0;
+        $this->borrow_slip_detail_id = $data['borrow_slip_detail_id'] ?? null;
+        $this->return_date = $data['return_date'] ?? '';
+        $this->fine = $data['fine'] ?? 0;
     }
 
-    public function getAllBooks()
+    public function getAllReturnSlips()
     {
         try {
-            $sql = 'SELECT b.*, a.name as author_name, c.name as category_name FROM books b
-                    LEFT JOIN authors a ON b.author_id = a.id
-                    LEFT JOIN categories c ON b.category_id = c.id';
+            $sql = 'SELECT rs.*, r.name as reader_name, b.title as book_title FROM return_slips rs
+                    LEFT JOIN borrow_slip_details bsd ON rs.borrow_slip_detail_id = bsd.id
+                    LEFT JOIN borrow_slips bs ON bsd.borrow_slip_id = bs.id
+                    LEFT JOIN readers r ON bs.reader_id = r.id
+                    LEFT JOIN books b ON bsd.book_id = b.id';
             $data = $this->select($sql);
             return [
                 'status' => true,
-                'message' => 'Lấy danh sách sách thành công',
+                'message' => 'Lấy danh sách phiếu trả thành công',
                 'data' => $data
             ];
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi lấy danh sách sách: ' . $e->getMessage()
+                'message' => 'Lỗi khi lấy danh sách phiếu trả: ' . $e->getMessage()
             ];
         }
     }
 
-    public function getBookById($id)
+    public function getReturnSlipById($id)
     {
         try {
             $data = $this->getById($id);
             if ($data) {
                 return [
                     'status' => true,
-                    'message' => 'Lấy sách thành công',
+                    'message' => 'Lấy phiếu trả thành công',
                     'data' => $data
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Không tìm thấy sách'
+                    'message' => 'Không tìm thấy phiếu trả'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi lấy sách: ' . $e->getMessage()
+                'message' => 'Lỗi khi lấy phiếu trả: ' . $e->getMessage()
             ];
         }
     }
 
-    public function createBook($data)
+    public function createReturnSlip($data)
     {
         try {
             $result = $this->create($data);
             if ($result) {
                 return [
                     'status' => true,
-                    'message' => 'Thêm sách thành công'
+                    'message' => 'Thêm phiếu trả thành công'
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Thêm sách thất bại'
+                    'message' => 'Thêm phiếu trả thất bại'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi thêm sách: ' . $e->getMessage()
+                'message' => 'Lỗi khi thêm phiếu trả: ' . $e->getMessage()
             ];
         }
     }
 
-    public function updateBook($id, $data)
+    public function updateReturnSlip($id, $data)
     {
         try {
             $result = $this->updateById($id, $data);
             if ($result) {
                 return [
                     'status' => true,
-                    'message' => 'Cập nhật sách thành công'
+                    'message' => 'Cập nhật phiếu trả thành công'
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Cập nhật sách thất bại'
+                    'message' => 'Cập nhật phiếu trả thất bại'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi cập nhật sách: ' . $e->getMessage()
+                'message' => 'Lỗi khi cập nhật phiếu trả: ' . $e->getMessage()
             ];
         }
     }
 
-    public function deleteBook($id)
+    public function deleteReturnSlip($id)
     {
         try {
             $result = $this->deleteById($id);
             if ($result) {
                 return [
                     'status' => true,
-                    'message' => 'Xóa sách thành công'
+                    'message' => 'Xóa phiếu trả thành công'
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Xóa sách thất bại'
+                    'message' => 'Xóa phiếu trả thất bại'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi xóa sách: ' . $e->getMessage()
+                'message' => 'Lỗi khi xóa phiếu trả: ' . $e->getMessage()
             ];
         }
     }
-    // Thêm các phương thức CRUD ở đây
 }

@@ -1,47 +1,47 @@
 <?php
 namespace App\Controllers;
 
-use App\Core\Controller;
-use App\Models\Author;
+use App\Controllers\BaseAuthController;
+use App\Models\Categories;
 
-class AuthorController extends Controller
+class CategoriesController extends BaseAuthController
 {
-    private $author;
+    private $category;
 
     public function __construct()
     {
-        $this->author = new Author();
+        $this->category = new Categories();
     }
     public function index()
     {
-        $result = $this->author->getAllAuthors();
-        $this->view('author/index', [
-            'authors' => $result['data'] ?? [],
+        $result = $this->category->getAllCategories();
+        $this->view('category/index', [
+            'categories' => $result['data'] ?? [],
             'message' => $result['message'],
             'status' => $result['status']
         ]);
     }
     public function insertView() {
-        $this->view('author/add');
+        $this->view('category/add');
     }
     public function insert() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'name' => $_POST['name'] ?? ''
             ];
-            $result = $this->author->createAuthor($data);
-            $this->view('author/add', [
+            $result = $this->category->createCategory($data);
+            $this->view('category/add', [
                 'message' => $result['message'],
                 'status' => $result['status']
             ]);
         } else {
-            $this->view('author/add');
+            $this->view('category/add');
         }
     }
     public function edit($id) {
-        $result = $this->author->getAuthorById($id);
-        $this->view('author/edit', [
-            'author' => $result['data'] ?? null,
+        $result = $this->category->getCategoryById($id);
+        $this->view('category/edit', [
+            'category' => $result['data'] ?? null,
             'message' => $result['message'],
             'status' => $result['status']
         ]);
@@ -51,20 +51,20 @@ class AuthorController extends Controller
             $data = [
                 'name' => $_POST['name'] ?? ''
             ];
-            $result = $this->author->updateAuthor($id, $data);
-            $author = $this->author->getAuthorById($id);
-            $this->view('author/edit', [
-                'author' => $author['data'] ?? null,
+            $result = $this->category->updateCategory($id, $data);
+            $category = $this->category->getCategoryById($id);
+            $this->view('category/edit', [
+                'category' => $category['data'] ?? null,
                 'message' => $result['message'],
                 'status' => $result['status']
             ]);
         }
     }
     public function delete($id) {
-        $result = $this->author->deleteAuthor($id);
-        $authors = $this->author->getAllAuthors();
-        $this->view('author/index', [
-            'authors' => $authors['data'] ?? [],
+        $result = $this->category->deleteCategory($id);
+        $categories = $this->category->getAllCategories();
+        $this->view('category/index', [
+            'categories' => $categories['data'] ?? [],
             'message' => $result['message'],
             'status' => $result['status']
         ]);

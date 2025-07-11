@@ -3,12 +3,12 @@ namespace App\Models;
 
 use App\Core\Model;
 
-class Category extends Model
+class Authors extends Model
 {
     public $id;
     public $name;
     
-    protected $table = 'categories';
+    protected $table = 'authors';
     protected $primaryKey = 'id';
 
     public function __construct($data = [])
@@ -18,112 +18,117 @@ class Category extends Model
         $this->name = $data['name'] ?? '';
     }
 
-    public function getAllCategories()
+    public function getAllAuthors()
     {
         try {
-            $data = $this->getAll();
+            $query = "SELECT * FROM authors";
+            $data = $this->select($query);
             return [
                 'status' => true,
-                'message' => 'Lấy danh sách thể loại thành công',
+                'message' => '',
                 'data' => $data
             ];
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi lấy danh sách thể loại: ' . $e->getMessage()
+                'message' => 'Lỗi khi lấy danh sách tác giả: ' . $e->getMessage()
             ];
         }
     }
 
-    public function getCategoryById($id)
+    public function getAuthorById($id)
     {
         try {
-            $data = $this->getById($id);
+            $query = "SELECT * FROM authors WHERE id = ?";
+            $data = $this->select($query, [$id], true);
             if ($data) {
                 return [
                     'status' => true,
-                    'message' => 'Lấy thể loại thành công',
+                    'message' => 'Lấy tác giả thành công',
                     'data' => $data
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Không tìm thấy thể loại'
+                    'message' => 'Không tìm thấy tác giả'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi lấy thể loại: ' . $e->getMessage()
+                'message' => 'Lỗi khi lấy tác giả: ' . $e->getMessage()
             ];
         }
     }
 
-    public function createCategory($data)
+    public function createAuthor($data)
     {
         try {
-            $result = $this->create($data);
+            $query = "INSERT INTO authors (name) VALUES (?)";
+            $result = $this->insert($query, [$data['name']]);
             if ($result) {
                 return [
                     'status' => true,
-                    'message' => 'Thêm thể loại thành công'
+                    'message' => 'Thêm tác giả thành công'
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Thêm thể loại thất bại'
+                    'message' => 'Thêm tác giả thất bại'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi thêm thể loại: ' . $e->getMessage()
+                'message' => 'Lỗi khi thêm tác giả: ' . $e->getMessage()
             ];
         }
     }
 
-    public function updateCategory($id, $data)
+    public function updateAuthor($id, $data)
     {
         try {
-            $result = $this->updateById($id, $data);
+            $query = "UPDATE authors SET name = ? WHERE id = ?";
+            $result = $this->update($query, [$data['name'], $id]);
             if ($result) {
                 return [
                     'status' => true,
-                    'message' => 'Cập nhật thể loại thành công'
+                    'message' => 'Cập nhật tác giả thành công'
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Cập nhật thể loại thất bại'
+                    'message' => 'Cập nhật tác giả thất bại'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi cập nhật thể loại: ' . $e->getMessage()
+                'message' => 'Lỗi khi cập nhật tác giả: ' . $e->getMessage()
             ];
         }
     }
 
-    public function deleteCategory($id)
+    public function deleteAuthor($id)
     {
         try {
-            $result = $this->deleteById($id);
+            $query = "DELETE FROM authors WHERE id = ?";
+            $result = $this->delete($query, [$id]);
             if ($result) {
                 return [
                     'status' => true,
-                    'message' => 'Xóa thể loại thành công'
+                    'message' => 'Xóa tác giả thành công'
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Xóa thể loại thất bại'
+                    'message' => 'Xóa tác giả thất bại'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi xóa thể loại: ' . $e->getMessage()
+                'message' => 'Lỗi khi xóa tác giả: ' . $e->getMessage()
             ];
         }
     }

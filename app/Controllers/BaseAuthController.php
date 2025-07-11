@@ -29,10 +29,4 @@ class BaseAuthController extends Controller
             'avatar' => Session::get('adminAvatar')
         ];
     }
-
-    protected function adminView($view, $data = [])
-    {
-        $data['currentAdmin'] = $this->getCurrentAdmin();
-        $this->view("admin/{$view}", $data);
-    }
 }

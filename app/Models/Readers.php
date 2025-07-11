@@ -3,7 +3,7 @@ namespace App\Models;
 
 use App\Core\Model;
 
-class Reader extends Model
+class Readers extends Model
 {
     public $id;
     public $name;

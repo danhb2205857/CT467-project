@@ -1,16 +1,16 @@
 <?php
 namespace App\Controllers;
 
-use App\Core\Controller;
-use App\Models\ReturnSlip;
+use App\Controllers\BaseAuthController;
+use App\Models\ReturnSlips;
 
-class ReturnSlipController extends Controller
+class ReturnSlipsController extends BaseAuthController
 {
     private $returnSlip;
 
     public function __construct()
     {
-        $this->returnSlip = new ReturnSlip();
+        $this->returnSlip = new ReturnSlips();
     }
     public function index()
     {

@@ -39,7 +39,7 @@ class Session
         self::init();
         if($role === 'admin') {
             if (self::get($role) !== true) {
-                header("Location: /admin/login");
+                header("Location: /login");
                 exit();
             }
         } else {
@@ -55,7 +55,7 @@ class Session
         self::init();
         if($role === "admin") {
             if (self::get($role) === true) {
-                header("Location: /admin");
+                header("Location: /");
             }
         } else {
         
@@ -95,5 +95,21 @@ class Session
     {
         self::init();
         session_destroy();
+    }
+
+    public static function flash($key, $val = null)
+    {
+        self::init();
+        if ($val !== null) {
+            $_SESSION[$key] = $val;
+            return null;
+        } else {
+            if (isset($_SESSION[$key])) {
+                $tmp = $_SESSION[$key];
+                unset($_SESSION[$key]);
+                return $tmp;
+            }
+            return null;
+        }
     }
 }

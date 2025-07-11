@@ -77,38 +77,4 @@ abstract class Model
     {
         return $this->db->lastInsertId();
     }
-
-    public function getAll()
-    {
-        return $this->select("SELECT * FROM {$this->table}");
-    }
-
-    public function getById($id)
-    {
-        return $this->select("SELECT * FROM {$this->table} WHERE {$this->primaryKey} = ?", [$id], true);
-    }
-
-    public function create($data)
-    {
-        $fields = array_keys($data);
-        $placeholders = implode(',', array_fill(0, count($fields), '?'));
-        $sql = "INSERT INTO {$this->table} (" . implode(',', $fields) . ") VALUES ($placeholders)";
-        return $this->insert($sql, array_values($data));
-    }
-
-    public function updateById($id, $data)
-    {
-        $fields = array_keys($data);
-        $set = implode(', ', array_map(fn($f) => "$f = ?", $fields));
-        $sql = "UPDATE {$this->table} SET $set WHERE {$this->primaryKey} = ?";
-        $params = array_values($data);
-        $params[] = $id;
-        return $this->update($sql, $params);
-    }
-
-    public function deleteById($id)
-    {
-        $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = ?";
-        return $this->delete($sql, [$id]);
-    }
 }

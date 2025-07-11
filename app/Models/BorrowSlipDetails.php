@@ -3,7 +3,7 @@ namespace App\Models;
 
 use App\Core\Model;
 
-class BorrowSlipDetail extends Model
+class BorrowSlipDetails extends Model
 {
     public $id;
     public $borrow_slip_id;

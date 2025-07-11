@@ -18,7 +18,7 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Session::isLoggedIn()) {
-            $this->redirect('/dashboard');
+            $this->redirect('/');
         }
         $this->view('auth/login');
     }
@@ -43,7 +43,7 @@ class AuthController extends Controller
                 Session::set("adminAvatar", $loginResult['data']['avatar']);
                 Session::set("adminEmail", $loginResult['data']['email']);
                 Session::set("adminName", $loginResult['data']['name']);
-                $this->redirect('/dashboard');
+                $this->redirect('/');
             } else {
                 $error = "Email hoặc mật khẩu không đúng";
                 $this->view('auth/login', ['error' => $error]);

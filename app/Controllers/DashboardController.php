@@ -2,10 +2,10 @@
 namespace App\Controllers;
 
 use App\Core\Session;
-use App\Core\Controller;
+use App\Controllers\BaseAuthController;
 use App\Models\Dashboard;
 
-class DashboardController extends Controller
+class DashboardController extends BaseAuthController
 {
     public function index()
     {

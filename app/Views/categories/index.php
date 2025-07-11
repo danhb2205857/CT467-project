@@ -2,7 +2,7 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Danh sách Thể loại</h2>
     <div>
-        <a href="/categories/add" class="btn btn-yellow me-2">Thêm thể loại</a>
+        <button class="btn btn-yellow me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Thêm thể loại</button>
         <button onclick="window.print()" class="btn btn-outline-secondary me-2">In bảng</button>
         <a href="/categories/export-excel" class="btn btn-success">Xuất Excel</a>
     </div>
@@ -27,11 +27,27 @@
             <td><?= $i+1 ?></td>
             <td><?= htmlspecialchars($category['name']) ?></td>
             <td>
-                <a href="/categories/edit/<?= $category['id'] ?>" class="btn btn-sm btn-primary">Sửa</a>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
+                    data-id="<?= $category['id'] ?>" data-name="<?= htmlspecialchars($category['name']) ?>">
+                    Sửa
+                </button>
                 <a href="/categories/delete/<?= $category['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Xác nhận xóa?')">Xóa</a>
             </td>
         </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
-<?php $content = ob_get_clean(); include __DIR__.'/../layout.php'; 
+<?php include_once __DIR__ . '/../components/categories_modal.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var editModal = document.getElementById('editCategoryModal');
+    if (editModal) {
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            editModal.querySelector('#editCategoryId').value = button.getAttribute('data-id');
+            editModal.querySelector('#editCategoryName').value = button.getAttribute('data-name');
+        });
+    }
+});
+</script>
+<?php $content = ob_get_clean(); include __DIR__.'/../layout.php'; ?> 

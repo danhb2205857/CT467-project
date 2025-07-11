@@ -1,16 +1,16 @@
 <?php
 namespace App\Controllers;
 
-use App\Core\Controller;
-use App\Models\Reader;
+use App\Controllers\BaseAuthController;
+use App\Models\Readers;
 
-class ReaderController extends Controller
+class ReadersController extends BaseAuthController
 {
     private $reader;
 
     public function __construct()
     {
-        $this->reader = new Reader();
+        $this->reader = new Readers();
     }
     public function index()
     {

@@ -1,31 +1,26 @@
 <?php
 namespace App\Controllers;
 
-use App\Core\Controller;
-use App\Models\Book;
+use App\Controllers\BaseAuthController;
+use App\Models\Books;
 
-class BookController extends BaseAuthController
+class BooksController extends BaseAuthController
 {
     private $book;
 
     public function __construct()
     {
-        $this->book = new Book();
+        $this->book = new Books();
     }
 
     public function index()
     {
         $result = $this->book->getAllBooks();
-        $this->view('book/index', [
+        $this->view('books/index', [
             'books' => $result['data'] ?? [],
             'message' => $result['message'],
             'status' => $result['status']
         ]);
-    }
-
-    public function addView()
-    {
-        $this->view('book/add');
     }
 
     public function add()

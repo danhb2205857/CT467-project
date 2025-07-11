@@ -3,136 +3,142 @@ namespace App\Models;
 
 use App\Core\Model;
 
-class BorrowSlip extends Model
+class Books extends Model
 {
     public $id;
-    public $reader_id;
-    public $borrow_date;
-    public $return_date;
-    public $status;
+    public $author_id;
+    public $category_id;
+    public $title;
+    public $publish_year;
+    public $publisher;
+    public $quantity;
     
-    protected $table = 'borrow_slips';
+    protected $table = 'books';
     protected $primaryKey = 'id';
 
     public function __construct($data = [])
     {
         parent::__construct();
         $this->id = $data['id'] ?? null;
-        $this->reader_id = $data['reader_id'] ?? null;
-        $this->borrow_date = $data['borrow_date'] ?? '';
-        $this->return_date = $data['return_date'] ?? '';
-        $this->status = $data['status'] ?? '';
+        $this->author_id = $data['author_id'] ?? null;
+        $this->category_id = $data['category_id'] ?? null;
+        $this->title = $data['title'] ?? '';
+        $this->publish_year = $data['publish_year'] ?? '';
+        $this->publisher = $data['publisher'] ?? '';
+        $this->quantity = $data['quantity'] ?? 0;
     }
 
-    public function getAllBorrowSlips()
+    public function getAllBooks()
     {
         try {
-            $sql = 'SELECT bs.*, r.name as reader_name FROM borrow_slips bs
-                    LEFT JOIN readers r ON bs.reader_id = r.id';
+            $sql = 'SELECT b.*, a.name as author_name, c.name as category_name FROM books b
+                    LEFT JOIN authors a ON b.author_id = a.id
+                    LEFT JOIN categories c ON b.category_id = c.id';
             $data = $this->select($sql);
             return [
                 'status' => true,
-                'message' => 'Lấy danh sách phiếu mượn thành công',
+                'message' => 'Lấy danh sách sách thành công',
                 'data' => $data
             ];
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi lấy danh sách phiếu mượn: ' . $e->getMessage()
+                'message' => 'Lỗi khi lấy danh sách sách: ' . $e->getMessage()
             ];
         }
     }
 
-    public function getBorrowSlipById($id)
+    public function getBookById($id)
     {
         try {
             $data = $this->getById($id);
             if ($data) {
                 return [
                     'status' => true,
-                    'message' => 'Lấy phiếu mượn thành công',
+                    'message' => 'Lấy sách thành công',
                     'data' => $data
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Không tìm thấy phiếu mượn'
+                    'message' => 'Không tìm thấy sách'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi lấy phiếu mượn: ' . $e->getMessage()
+                'message' => 'Lỗi khi lấy sách: ' . $e->getMessage()
             ];
         }
     }
 
-    public function createBorrowSlip($data)
+    public function createBook($data)
     {
         try {
             $result = $this->create($data);
             if ($result) {
                 return [
                     'status' => true,
-                    'message' => 'Thêm phiếu mượn thành công'
+                    'message' => 'Thêm sách thành công'
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Thêm phiếu mượn thất bại'
+                    'message' => 'Thêm sách thất bại'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi thêm phiếu mượn: ' . $e->getMessage()
+                'message' => 'Lỗi khi thêm sách: ' . $e->getMessage()
             ];
         }
     }
 
-    public function updateBorrowSlip($id, $data)
+    public function updateBook($id, $data)
     {
         try {
             $result = $this->updateById($id, $data);
             if ($result) {
                 return [
                     'status' => true,
-                    'message' => 'Cập nhật phiếu mượn thành công'
+                    'message' => 'Cập nhật sách thành công'
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Cập nhật phiếu mượn thất bại'
+                    'message' => 'Cập nhật sách thất bại'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi cập nhật phiếu mượn: ' . $e->getMessage()
+                'message' => 'Lỗi khi cập nhật sách: ' . $e->getMessage()
             ];
         }
     }
 
-    public function deleteBorrowSlip($id)
+    public function deleteBook($id)
     {
         try {
             $result = $this->deleteById($id);
             if ($result) {
                 return [
                     'status' => true,
-                    'message' => 'Xóa phiếu mượn thành công'
+                    'message' => 'Xóa sách thành công'
                 ];
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Xóa phiếu mượn thất bại'
+                    'message' => 'Xóa sách thất bại'
                 ];
             }
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Lỗi khi xóa phiếu mượn: ' . $e->getMessage()
+                'message' => 'Lỗi khi xóa sách: ' . $e->getMessage()
             ];
         }
     }
+    // Thêm các phương thức CRUD ở đây
 }

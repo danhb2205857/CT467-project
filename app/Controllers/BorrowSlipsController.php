@@ -1,16 +1,16 @@
 <?php
 namespace App\Controllers;
 
-use App\Core\Controller;
-use App\Models\BorrowSlip;
+use App\Controllers\BaseAuthController;
+use App\Models\BorrowSlips;
 
-class BorrowSlipController extends Controller
+class BorrowSlipsController extends BaseAuthController
 {
     private $borrowSlip;
 
     public function __construct()
     {
-        $this->borrowSlip = new BorrowSlip();
+        $this->borrowSlip = new BorrowSlips();
     }
     public function index()
     {
