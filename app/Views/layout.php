@@ -1,3 +1,7 @@
+<?php
+    use App\Core\Session;
+?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -20,7 +24,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="/statistics">📚 Quản trị Thư viện</a>
         <div class="d-flex align-items-center">
-            <span class="text-white me-3">Xin chào, Admin</span>
+            <span class="text-white me-3">Xin chào, <?php echo Session::get('adminName') ?></span>
             <a href="/logout" class="btn btn-outline-light btn-sm">Đăng xuất</a>
         </div>
     </div>
