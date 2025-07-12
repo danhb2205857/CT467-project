@@ -7,7 +7,7 @@ class Readers extends Model
 {
     public $id;
     public $name;
-    public $birthday;
+    public $birth_date;
     public $phone;
     
     protected $table = 'readers';
@@ -18,17 +18,17 @@ class Readers extends Model
         parent::__construct();
         $this->id = $data['id'] ?? null;
         $this->name = $data['name'] ?? '';
-        $this->birthday = $data['birthday'] ?? '';
+        $this->birth_date = $data['birth_date'] ?? '';
         $this->phone = $data['phone'] ?? '';
     }
 
     public function getAllReaders()
     {
         try {
-            $data = $this->getAll();
+            $query = "SELECT * FROM readers";
+            $data = $this->select($query);
             return [
                 'status' => true,
-                'message' => 'Lấy danh sách độc giả thành công',
                 'data' => $data
             ];
         } catch (\Exception $e) {
@@ -42,7 +42,8 @@ class Readers extends Model
     public function getReaderById($id)
     {
         try {
-            $data = $this->getById($id);
+            $query = "SELECT id, name, birthday AS birth_date, phone FROM readers WHERE id = ?";
+            $data = $this->select($query, [$id], true);
             if ($data) {
                 return [
                     'status' => true,
@@ -66,7 +67,12 @@ class Readers extends Model
     public function createReader($data)
     {
         try {
-            $result = $this->create($data);
+            $query = "INSERT INTO readers (name, birth_date, phone) VALUES (?, ?, ?)";
+            $result = $this->insert($query, [
+                $data['name'],
+                $data['birth_date'],
+                $data['phone']
+            ]);
             if ($result) {
                 return [
                     'status' => true,
@@ -89,7 +95,13 @@ class Readers extends Model
     public function updateReader($id, $data)
     {
         try {
-            $result = $this->updateById($id, $data);
+            $query = "UPDATE readers SET name = ?, birthday = ?, phone = ? WHERE id = ?";
+            $result = $this->update($query, [
+                $data['name'],
+                $data['birth_date'],
+                $data['phone'],
+                $id
+            ]);
             if ($result) {
                 return [
                     'status' => true,
@@ -112,7 +124,8 @@ class Readers extends Model
     public function deleteReader($id)
     {
         try {
-            $result = $this->deleteById($id);
+            $query = "DELETE FROM readers WHERE id = ?";
+            $result = $this->delete($query, [$id]);
             if ($result) {
                 return [
                     'status' => true,

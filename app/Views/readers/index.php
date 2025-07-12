@@ -8,7 +8,7 @@
     </div>
 </div>
 <?php if (!empty($message)): ?>
-    <div class="alert alert-<?= !empty($status) && $status ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
+    <div id="alert-message" class="alert alert-<?= !empty($status) && $status ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
         <?= htmlspecialchars($message) ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -16,45 +16,56 @@
 <table class="table table-bordered table-hover bg-white">
     <thead class="table-warning">
         <tr>
-            <th>#</th>
-            <th>Tên độc giả</th>
-            <th>Ngày sinh</th>
-            <th>Số điện thoại</th>
-            <th>Hành động</th>
+            <th class="text-center" style="width: 5%;">STT</th>
+            <th style="width: 40%;">Tên độc giả</th>
+            <th style="width: 20%;">Ngày sinh</th>
+            <th style="width: 20%;">Số điện thoại</th>
+            <th class="text-center" style="width: 15%;">Hành động</th>
         </tr>
     </thead>
     <tbody>
         <?php if (!empty($readers)) foreach ($readers as $i => $reader): ?>
-        <tr>
-            <td><?= $i+1 ?></td>
-            <td><?= htmlspecialchars($reader['name']) ?></td>
-            <td><?= htmlspecialchars($reader['birth_date']) ?></td>
-            <td><?= htmlspecialchars($reader['phone']) ?></td>
-            <td>
-                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editReaderModal"
-                    data-id="<?= $reader['id'] ?>" data-name="<?= htmlspecialchars($reader['name']) ?>"
-                    data-birth_date="<?= htmlspecialchars($reader['birth_date']) ?>" data-phone="<?= htmlspecialchars($reader['phone']) ?>">
-                    Sửa
-                </button>
-                <a href="/readers/delete/<?= $reader['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Xác nhận xóa?')">Xóa</a>
-            </td>
-        </tr>
+            <tr>
+                <td class="text-center"><?= $i + 1 ?></td>
+                <td><?= htmlspecialchars($reader['name']) ?></td>
+                <td><?= htmlspecialchars($reader['birth_date']) ?></td>
+                <td><?= htmlspecialchars($reader['phone']) ?></td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editReaderModal"
+                        data-id="<?= $reader['id'] ?>" data-name="<?= htmlspecialchars($reader['name']) ?>"
+                        data-birth_date="<?= htmlspecialchars($reader['birth_date']) ?>" data-phone="<?= htmlspecialchars($reader['phone']) ?>">
+                        Sửa
+                    </button>
+                    <a href="/readers/delete/<?= $reader['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Xác nhận xóa?')">Xóa</a>
+                </td>
+            </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
 <?php include_once __DIR__ . '/../components/readers_modal.php'; ?>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    var editModal = document.getElementById('editReaderModal');
-    if (editModal) {
-        editModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            editModal.querySelector('#editReaderId').value = button.getAttribute('data-id');
-            editModal.querySelector('#editReaderName').value = button.getAttribute('data-name');
-            editModal.querySelector('#editReaderBirthDate').value = button.getAttribute('data-birth_date');
-            editModal.querySelector('#editReaderPhone').value = button.getAttribute('data-phone');
-        });
-    }
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        var alertBox = document.getElementById('alert-message');
+        if (alertBox) {
+            setTimeout(function() {
+                alertBox.remove();
+            }, 5000);
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var editModal = document.getElementById('editReaderModal');
+        if (editModal) {
+            editModal.addEventListener('show.bs.modal', function(event) {
+                var button = event.relatedTarget;
+                editModal.querySelector('#editReaderId').value = button.getAttribute('data-id');
+                editModal.querySelector('#editReaderName').value = button.getAttribute('data-name');
+                editModal.querySelector('#editReaderBirthDate').value = button.getAttribute('data-birth_date');
+                editModal.querySelector('#editReaderPhone').value = button.getAttribute('data-phone');
+                editModal.querySelector('#form').action = '/readers/' + button.getAttribute('data-id');
+            });
+        }
+    });
 </script>
-<?php $content = ob_get_clean(); include __DIR__.'/../layout.php'; ?> 
+<?php $content = ob_get_clean();
+include __DIR__ . '/../layout.php'; ?>

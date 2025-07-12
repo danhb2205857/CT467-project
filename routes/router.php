@@ -32,10 +32,8 @@ $router->get('/categories/delete/{id}', 'CategoriesController@delete');
 
 // Readers
 $router->get('/readers', 'ReadersController@index');
-$router->get('/readers/add', 'ReadersController@addView');
-$router->post('/readers', 'ReadersController@add');
-$router->get('/readers/edit/{id}', 'ReadersController@editView');
-$router->post('/readers/{id}', 'ReadersController@edit');
+$router->post('/readers', 'ReadersController@insert');
+$router->post('/readers/{id}', 'ReadersController@update');
 $router->get('/readers/delete/{id}', 'ReadersController@delete');
 
 // Borrow Slips
