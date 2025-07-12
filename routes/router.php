@@ -26,10 +26,8 @@ $router->get('/authors/delete/{id}', 'AuthorsController@delete');
 
 // Categories
 $router->get('/categories', 'CategoriesController@index');
-$router->get('/categories/add', 'CategoriesController@addView');
-$router->post('/categories', 'CategoriesController@add');
-$router->get('/categories/edit/{id}', 'CategoriesController@editView');
-$router->post('/categories/{id}', 'CategoriesController@edit');
+$router->post('/categories', 'CategoriesController@insert');
+$router->post('/categories/{id}', 'CategoriesController@update');
 $router->get('/categories/delete/{id}', 'CategoriesController@delete');
 
 // Readers

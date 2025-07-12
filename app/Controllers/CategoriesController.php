@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseAuthController;
 use App\Models\Categories;
+use App\Core\Session;
 
 class CategoriesController extends BaseAuthController
 {
@@ -15,14 +16,13 @@ class CategoriesController extends BaseAuthController
     public function index()
     {
         $result = $this->category->getAllCategories();
-        $this->view('category/index', [
+        $message = Session::flash('message');
+        $status = Session::flash('status');
+        $this->view('categories/index', [
             'categories' => $result['data'] ?? [],
-            'message' => $result['message'],
-            'status' => $result['status']
+            'message' => $message !== null ? $message : ($result['message'] ?? ''),
+            'status' => $status !== null ? $status : ($result['status'] ?? null)
         ]);
-    }
-    public function insertView() {
-        $this->view('category/add');
     }
     public function insert() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -30,43 +30,30 @@ class CategoriesController extends BaseAuthController
                 'name' => $_POST['name'] ?? ''
             ];
             $result = $this->category->createCategory($data);
-            $this->view('category/add', [
-                'message' => $result['message'],
-                'status' => $result['status']
-            ]);
-        } else {
-            $this->view('category/add');
+            Session::flash('message', $result['message']);
+            Session::flash('status', $result['status']);
+            header('Location: /categories');
+            exit;
         }
     }
-    public function edit($id) {
-        $result = $this->category->getCategoryById($id);
-        $this->view('category/edit', [
-            'category' => $result['data'] ?? null,
-            'message' => $result['message'],
-            'status' => $result['status']
-        ]);
-    }
+
     public function update($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'name' => $_POST['name'] ?? ''
             ];
             $result = $this->category->updateCategory($id, $data);
-            $category = $this->category->getCategoryById($id);
-            $this->view('category/edit', [
-                'category' => $category['data'] ?? null,
-                'message' => $result['message'],
-                'status' => $result['status']
-            ]);
+            Session::flash('message', $result['message']);
+            Session::flash('status', $result['status']);
+            header('Location: /categories');
+            exit;
         }
     }
     public function delete($id) {
         $result = $this->category->deleteCategory($id);
-        $categories = $this->category->getAllCategories();
-        $this->view('category/index', [
-            'categories' => $categories['data'] ?? [],
-            'message' => $result['message'],
-            'status' => $result['status']
-        ]);
+        Session::flash('message', $result['message']);
+        Session::flash('status', $result['status']);
+        header('Location: /categories');
+        exit;
     }
 }

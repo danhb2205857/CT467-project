@@ -21,10 +21,10 @@ class Categories extends Model
     public function getAllCategories()
     {
         try {
-            $data = $this->getAll();
+            $query = "SELECT * FROM categories";
+            $data = $this->select($query);
             return [
                 'status' => true,
-                'message' => 'Lấy danh sách thể loại thành công',
                 'data' => $data
             ];
         } catch (\Exception $e) {
@@ -38,11 +38,11 @@ class Categories extends Model
     public function getCategoryById($id)
     {
         try {
-            $data = $this->getById($id);
+            $query = "SELECT * FROM categories WHERE id = ?";
+            $data = $this->select($query, [$id], true);
             if ($data) {
                 return [
                     'status' => true,
-                    'message' => 'Lấy thể loại thành công',
                     'data' => $data
                 ];
             } else {
@@ -62,7 +62,8 @@ class Categories extends Model
     public function createCategory($data)
     {
         try {
-            $result = $this->create($data);
+            $query = "INSERT INTO categories (name) VALUES (?)";
+            $result = $this->insert($query, [$data['name']]);
             if ($result) {
                 return [
                     'status' => true,
@@ -85,7 +86,8 @@ class Categories extends Model
     public function updateCategory($id, $data)
     {
         try {
-            $result = $this->updateById($id, $data);
+            $query = "UPDATE categories SET name = ? WHERE id = ?";
+            $result = $this->update($query, [$data['name'], $id]);
             if ($result) {
                 return [
                     'status' => true,
@@ -108,7 +110,8 @@ class Categories extends Model
     public function deleteCategory($id)
     {
         try {
-            $result = $this->deleteById($id);
+            $query = "DELETE FROM categories WHERE id = ?";
+            $result = $this->delete($query, [$id]);
             if ($result) {
                 return [
                     'status' => true,

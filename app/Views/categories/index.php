@@ -8,7 +8,7 @@
     </div>
 </div>
 <?php if (!empty($message)): ?>
-    <div class="alert alert-<?= !empty($status) && $status ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
+    <div id="alert-message" class="alert alert-<?= !empty($status) && $status ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
         <?= htmlspecialchars($message) ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -16,38 +16,51 @@
 <table class="table table-bordered table-hover bg-white">
     <thead class="table-warning">
         <tr>
-            <th>#</th>
-            <th>Tên thể loại</th>
-            <th>Hành động</th>
+            <th class="text-center" style="width: 5%;">STT</th>
+            <th style="width: 80%;">Tên thể loại</th>
+            <th class="text-center" style="width: 15%;">Hành động</th>
         </tr>
     </thead>
     <tbody>
         <?php if (!empty($categories)) foreach ($categories as $i => $category): ?>
-        <tr>
-            <td><?= $i+1 ?></td>
-            <td><?= htmlspecialchars($category['name']) ?></td>
-            <td>
-                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
-                    data-id="<?= $category['id'] ?>" data-name="<?= htmlspecialchars($category['name']) ?>">
-                    Sửa
-                </button>
-                <a href="/categories/delete/<?= $category['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Xác nhận xóa?')">Xóa</a>
-            </td>
-        </tr>
+            <tr>
+                <td class="text-center"><?= $i + 1 ?></td>
+                <td><?= htmlspecialchars($category['name']) ?></td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
+                        data-id="<?= $category['id'] ?>" data-name="<?= htmlspecialchars($category['name']) ?>">
+                        Sửa
+                    </button>
+                    <a href="/categories/delete/<?= $category['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Xác nhận xóa?')">Xóa</a>
+                </td>
+            </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
 <?php include_once __DIR__ . '/../components/categories_modal.php'; ?>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    var editModal = document.getElementById('editCategoryModal');
-    if (editModal) {
-        editModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            editModal.querySelector('#editCategoryId').value = button.getAttribute('data-id');
-            editModal.querySelector('#editCategoryName').value = button.getAttribute('data-name');
-        });
-    }
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        var alertBox = document.getElementById('alert-message');
+        if (alertBox) {
+            setTimeout(function() {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var editModal = document.getElementById('editCategoryModal');
+        if (editModal) {
+            editModal.addEventListener('show.bs.modal', function(event) {
+                var button = event.relatedTarget;
+                var id = button.getAttribute('data-id');
+                var name = button.getAttribute('data-name');
+                editModal.querySelector('#editCategoryId').value = id;
+                editModal.querySelector('#editCategoryName').value = name;
+                editModal.querySelector('form').action = '/categories/' + id;
+            });
+        }
+    });
 </script>
-<?php $content = ob_get_clean(); include __DIR__.'/../layout.php'; ?> 
+<?php $content = ob_get_clean();
+include __DIR__ . '/../layout.php'; ?>
