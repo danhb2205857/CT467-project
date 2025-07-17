@@ -13,7 +13,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 <?php endif; ?>
-<table class="table table-bordered table-hover bg-white">
+<table class="table table-bordered table-hover bg-white books-table">
     <thead class="table-warning">
         <tr>
             <th class="text-center" style="width:4%">STT</th>
