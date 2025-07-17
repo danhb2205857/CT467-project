@@ -12,10 +12,8 @@ $router->get('/logout', 'AuthController@logout');
 
 // Books
 $router->get('/books', 'BooksController@index');
-$router->get('/books/add', 'BooksController@addView');
-$router->post('/books', 'BooksController@add');
-$router->get('/books/edit/{id}', 'BooksController@editView');
-$router->post('/books/{id}', 'BooksController@edit');
+$router->post('/books', 'BooksController@insert');
+$router->post('/books/{id}', 'BooksController@update');
 $router->get('/books/delete/{id}', 'BooksController@delete');
 
 // Authors
@@ -51,4 +49,11 @@ $router->post('/returnslips', 'ReturnSlipsController@add');
 $router->get('/returnslips/edit/{id}', 'ReturnSlipsController@editView');
 $router->post('/returnslips/{id}', 'ReturnSlipsController@edit');
 $router->get('/returnslips/delete/{id}', 'ReturnSlipsController@delete');
+
+// Admin Logs
+$router->get('/adminlogs', 'AdminLogsController@index');
+$router->get('/adminlogs/show/{id}', 'AdminLogsController@show');
+$router->get('/adminlogs/filter', 'AdminLogsController@filter');
+$router->get('/adminlogs/statistics', 'AdminLogsController@statistics');
+$router->get('/adminlogs/export', 'AdminLogsController@export');
 

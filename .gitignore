@@ -1,4 +1,5 @@
 /vendor/
+/.kiro/
 /storage/logs/*.log
 .env
 .env.local

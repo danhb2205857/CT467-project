@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseAuthController;
 use App\Models\Books;
+use App\Core\Session;
 
 class BooksController extends BaseAuthController
 {
@@ -16,14 +17,20 @@ class BooksController extends BaseAuthController
     public function index()
     {
         $result = $this->book->getAllBooks();
+        $authors = (new \App\Models\Authors())->getAllAuthors()['data'] ?? [];
+        $categories = (new \App\Models\Categories())->getAllCategories()['data'] ?? [];
+        $message = Session::flash('message');
+        $status = Session::flash('status');
         $this->view('books/index', [
             'books' => $result['data'] ?? [],
-            'message' => $result['message'],
-            'status' => $result['status']
+            'authors' => $authors,
+            'categories' => $categories,
+            'message' => $message !== null ? $message : ($result['message'] ?? ''),
+            'status' => $status !== null ? $status : ($result['status'] ?? null)
         ]);
     }
 
-    public function add()
+    public function insert()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
@@ -35,26 +42,17 @@ class BooksController extends BaseAuthController
                 'quantity' => $_POST['quantity'] ?? 0,
             ];
             $result = $this->book->createBook($data);
-            $this->view('book/add', [
-                'message' => $result['message'],
-                'status' => $result['status']
-            ]);
-        } else {
-            $this->view('book/add');
+            if ($result['status']) {
+                $this->logCrudAction('CREATE', 'books', null, null, $data);
+            }
+            Session::flash('message', $result['message']);
+            Session::flash('status', $result['status']);
+            header('Location: /books');
+            exit;
         }
     }
 
-    public function editView($id)
-    {
-        $result = $this->book->getBookById($id);
-        $this->view('book/edit', [
-            'book' => $result['data'] ?? null,
-            'message' => $result['message'],
-            'status' => $result['status']
-        ]);
-    }
-
-    public function edit($id)
+    public function update($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
@@ -65,24 +63,28 @@ class BooksController extends BaseAuthController
                 'publisher' => $_POST['publisher'] ?? '',
                 'quantity' => $_POST['quantity'] ?? 0,
             ];
+            $old = $this->book->getBookById($id)['data'] ?? null;
             $result = $this->book->updateBook($id, $data);
-            $book = $this->book->getBookById($id);
-            $this->view('book/edit', [
-                'book' => $book['data'] ?? null,
-                'message' => $result['message'],
-                'status' => $result['status']
-            ]);
+            if ($result['status']) {
+                $this->logCrudAction('UPDATE', 'books', $id, $old, $data);
+            }
+            Session::flash('message', $result['message']);
+            Session::flash('status', $result['status']);
+            header('Location: /books');
+            exit;
         }
     }
 
     public function delete($id)
     {
+        $old = $this->book->getBookById($id)['data'] ?? null;
         $result = $this->book->deleteBook($id);
-        $books = $this->book->getAllBooks();
-        $this->view('book/index', [
-            'books' => $books['data'] ?? [],
-            'message' => $result['message'],
-            'status' => $result['status']
-        ]);
+        if ($result['status']) {
+            $this->logCrudAction('DELETE', 'books', $id, $old, null);
+        }
+        Session::flash('message', $result['message']);
+        Session::flash('status', $result['status']);
+        header('Location: /books');
+        exit;
     }
 }

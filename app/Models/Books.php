@@ -31,13 +31,12 @@ class Books extends Model
     public function getAllBooks()
     {
         try {
-            $sql = 'SELECT b.*, a.name as author_name, c.name as category_name FROM books b
+            $query = 'SELECT b.*, a.name as author_name, c.name as category_name FROM books b
                     LEFT JOIN authors a ON b.author_id = a.id
                     LEFT JOIN categories c ON b.category_id = c.id';
-            $data = $this->select($sql);
+            $data = $this->select($query);
             return [
                 'status' => true,
-                'message' => 'Lấy danh sách sách thành công',
                 'data' => $data
             ];
         } catch (\Exception $e) {
@@ -51,7 +50,11 @@ class Books extends Model
     public function getBookById($id)
     {
         try {
-            $data = $this->getById($id);
+            $query = 'SELECT b.*, a.name as author_name, c.name as category_name FROM books b
+                    LEFT JOIN authors a ON b.author_id = a.id
+                    LEFT JOIN categories c ON b.category_id = c.id
+                    WHERE b.id = :id LIMIT 1';
+            $data = $this->select($query, ['id' => $id], true);
             if ($data) {
                 return [
                     'status' => true,
@@ -75,7 +78,16 @@ class Books extends Model
     public function createBook($data)
     {
         try {
-            $result = $this->create($data);
+            $query = 'INSERT INTO books (title, author_id, category_id, publish_year, publisher, quantity) VALUES (:title, :author_id, :category_id, :publish_year, :publisher, :quantity)';
+            $params = [
+                'title' => $data['title'],
+                'author_id' => $data['author_id'],
+                'category_id' => $data['category_id'],
+                'publish_year' => $data['publish_year'],
+                'publisher' => $data['publisher'],
+                'quantity' => $data['quantity']
+            ];
+            $result = $this->insert($query, $params);
             if ($result) {
                 return [
                     'status' => true,
@@ -98,7 +110,17 @@ class Books extends Model
     public function updateBook($id, $data)
     {
         try {
-            $result = $this->updateById($id, $data);
+            $query = 'UPDATE books SET title = :title, author_id = :author_id, category_id = :category_id, publish_year = :publish_year, publisher = :publisher, quantity = :quantity WHERE id = :id';
+            $params = [
+                'id' => $id,
+                'title' => $data['title'],
+                'author_id' => $data['author_id'],
+                'category_id' => $data['category_id'],
+                'publish_year' => $data['publish_year'],
+                'publisher' => $data['publisher'],
+                'quantity' => $data['quantity']
+            ];
+            $result = $this->update($query, $params);
             if ($result) {
                 return [
                     'status' => true,
@@ -121,7 +143,8 @@ class Books extends Model
     public function deleteBook($id)
     {
         try {
-            $result = $this->deleteById($id);
+            $query = 'DELETE FROM books WHERE id = :id';
+            $result = $this->delete($query, ['id' => $id]);
             if ($result) {
                 return [
                     'status' => true,
@@ -140,5 +163,4 @@ class Books extends Model
             ];
         }
     }
-    // Thêm các phương thức CRUD ở đây
 }
