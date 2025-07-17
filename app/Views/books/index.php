@@ -16,29 +16,29 @@
 <table class="table table-bordered table-hover bg-white">
     <thead class="table-warning">
         <tr>
-            <th>STT</th>
-            <th>Tên sách</th>
-            <th>Tác giả</th>
-            <th>Thể loại</th>
-            <th>Năm XB</th>
-            <th>Nhà XB</th>
-            <th>Số lượng</th>
-            <th>Hiện có</th>
-            <th>Hành động</th>
+            <th class="text-center" style="width:4%">STT</th>
+            <th class="text-center">Tên sách</th>
+            <th class="text-center">Tác giả</th>
+            <th class="text-center">Thể loại</th>
+            <th class="text-center">Năm XB</th>
+            <th class="text-center">Nhà XB</th>
+            <th class="text-center" style="width:6%">Số lượng</th>
+            <th class="text-center" style="width:6%">Hiện có</th>
+            <th class="text-center" style="width:10%">Hành động</th>
         </tr>
     </thead>
     <tbody>
         <?php if (!empty($books)) foreach ($books as $i => $book): ?>
             <tr>
-                <td><?= $i + 1 ?></td>
+                <td class="text-center"><?= $i + 1 ?></td>
                 <td><?= htmlspecialchars($book['title']) ?></td>
                 <td><?= htmlspecialchars($book['author_name'] ?? '') ?></td>
                 <td><?= htmlspecialchars($book['category_name'] ?? '') ?></td>
-                <td><?= htmlspecialchars($book['publish_year']) ?></td>
+                <td class="text-center"><?= htmlspecialchars($book['publish_year']) ?></td>
                 <td><?= htmlspecialchars($book['publisher']) ?></td>
-                <td><?= htmlspecialchars($book['quantity']) ?></td>
-                <td><?= htmlspecialchars($book['available']) ?></td>
-                <td>
+                <td class="text-center"><?= htmlspecialchars($book['quantity']) ?></td>
+                <td class="text-center"><?= htmlspecialchars($book['available']) ?></td>
+                <td class="text-center">
                     <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editBookModal"
                         data-id="<?= $book['id'] ?>" data-title="<?= htmlspecialchars($book['title']) ?>"
                         data-author_id="<?= htmlspecialchars($book['author_id']) ?>" data-category_id="<?= htmlspecialchars($book['category_id']) ?>"
