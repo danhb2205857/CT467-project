@@ -23,10 +23,10 @@
     </thead>
     <tbody>
         <?php if (!empty($categories)) foreach ($categories as $i => $category): ?>
-            <tr>
+            <tr class="category-row" style="cursor:pointer" onclick="window.location.href='/books?category_id=<?= $category['id'] ?>'">
                 <td class="text-center"><?= $i + 1 ?></td>
                 <td><?= htmlspecialchars($category['name']) ?></td>
-                <td class="text-center">
+                <td class="text-center" onclick="event.stopPropagation();">
                     <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
                         data-id="<?= $category['id'] ?>" data-name="<?= htmlspecialchars($category['name']) ?>">
                         Sửa

@@ -22,7 +22,32 @@ class BooksController extends BaseAuthController
             'category' => $_GET['category'] ?? '',
             'publisher' => $_GET['publisher'] ?? '',
             'publish_year' => $_GET['publish_year'] ?? '',
+            'author_id' => $_GET['author_id'] ?? '',
+            'category_id' => $_GET['category_id'] ?? '',
         ];
+        $special_filters = [];
+        if (!empty($filters['author_id'])) {
+            $authorModel = new \App\Models\Authors();
+            $authorData = $authorModel->getAuthorById($filters['author_id']);
+            if (!empty($authorData['data'])) {
+                $special_filters['author'] = [
+                    'id' => $filters['author_id'],
+                    'name' => $authorData['data']['name'],
+                    'param' => 'author_id'
+                ];
+            }
+        }
+        if (!empty($filters['category_id'])) {
+            $categoryModel = new \App\Models\Categories();
+            $categoryData = $categoryModel->getCategoryById($filters['category_id']);
+            if (!empty($categoryData['data'])) {
+                $special_filters['category'] = [
+                    'id' => $filters['category_id'],
+                    'name' => $categoryData['data']['name'],
+                    'param' => 'category_id'
+                ];
+            }
+        }
         $hasFilter = false;
         foreach ($filters as $v) {
             if ($v !== '' && $v !== null) {
@@ -43,6 +68,8 @@ class BooksController extends BaseAuthController
             'books' => $result['data'] ?? [],
             'authors' => $authors,
             'categories' => $categories,
+            'special_filters' => $special_filters,
+            'filters' => $filters,
             'message' => $message !== null ? $message : ($result['message'] ?? ''),
             'status' => $status !== null ? $status : ($result['status'] ?? null)
         ]);

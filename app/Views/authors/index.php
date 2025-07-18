@@ -17,16 +17,18 @@
     <thead class="table-warning">
         <tr>
             <th class="text-center" style="width: 5%;">STT</th>
-            <th style="width: 80%;">Tên tác giả</th>
+            <th style="width: 60%;">Tên tác giả</th>
+            <th class="text-center" style="width: 20%;">Tổng số sách</th>
             <th class="text-center" style="width: 15%;">Hành động</th>
         </tr>
     </thead>
     <tbody>
         <?php if (!empty($authors)) foreach ($authors as $i => $author): ?>
-            <tr>
+            <tr class="author-row" style="cursor:pointer" onclick="window.location.href='/books?author_id=<?= $author['id'] ?>'">
                 <td class="text-center"><?= $i + 1 ?></td>
                 <td><?= htmlspecialchars($author['name']) ?></td>
-                <td class="text-center">
+                <td class="text-center"><?= $author['total_books'] ?? 0 ?></td>
+                <td class="text-center" onclick="event.stopPropagation();">
                     <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editAuthorModal"
                         data-id="<?= $author['id'] ?>" data-name="<?= htmlspecialchars($author['name']) ?>">
                         Sửa

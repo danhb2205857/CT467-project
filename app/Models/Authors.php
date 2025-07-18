@@ -21,7 +21,7 @@ class Authors extends Model
     public function getAllAuthors()
     {
         try {
-            $query = "SELECT * FROM authors";
+            $query = "SELECT a.*, COUNT(b.id) as total_books FROM authors a LEFT JOIN books b ON a.id = b.author_id GROUP BY a.id ORDER BY a.id";
             $data = $this->select($query);
             return [
                 'status' => true,

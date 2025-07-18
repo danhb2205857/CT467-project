@@ -27,9 +27,17 @@ foreach ($filters as $v) {
     <button class="btn btn-outline-primary me-2 mb-1" data-bs-toggle="modal" data-bs-target="#filterModal">
         <i class="bi bi-funnel"></i> LỌC
     </button>
+    <?php if (!empty($special_filters)): ?>
+        <?php foreach ($special_filters as $type => $filter): ?>
+            <span class="badge bg-warning text-dark border me-2 mb-1">
+                <?= ucfirst($type) ?>: <?= htmlspecialchars($filter['name']) ?>
+                <a href="<?= htmlspecialchars('/books?' . http_build_query(array_merge($filters, [$filter['param'] => '']))) ?>" class="text-decoration-none ms-1" style="color: #888;">&times;</a>
+            </span>
+        <?php endforeach; ?>
+    <?php endif; ?>
     <?php if ($hasFilter): ?>
         <?php foreach ($filters as $key => $value): ?>
-            <?php if ($value !== '' && $value !== null): ?>
+            <?php if ($value !== '' && $value !== null && $key !== 'author_id' && $key !== 'category_id'): ?>
                 <span class="badge bg-light text-dark border me-2 mb-1">
                     <?= htmlspecialchars($value) ?>
                     <a href="<?= htmlspecialchars('/books?' . http_build_query(array_merge($filters, [$key => '']))) ?>" class="text-decoration-none ms-1" style="color: #888;">&times;</a>
