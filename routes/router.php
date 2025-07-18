@@ -36,10 +36,8 @@ $router->get('/readers/delete/{id}', 'ReadersController@delete');
 
 // Borrow Slips
 $router->get('/borrowslips', 'BorrowSlipsController@index');
-$router->get('/borrowslips/add', 'BorrowSlipsController@addView');
-$router->post('/borrowslips', 'BorrowSlipsController@add');
-$router->get('/borrowslips/edit/{id}', 'BorrowSlipsController@editView');
-$router->post('/borrowslips/{id}', 'BorrowSlipsController@edit');
+$router->post('/borrowslips', 'BorrowSlipsController@insert');
+$router->post('/borrowslips/{id}', 'BorrowSlipsController@update');
 $router->get('/borrowslips/delete/{id}', 'BorrowSlipsController@delete');
 
 // Return Slips

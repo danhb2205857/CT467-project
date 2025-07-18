@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseAuthController;
 use App\Models\BorrowSlips;
+use App\Core\Session;
 
 class BorrowSlipsController extends BaseAuthController
 {
@@ -14,41 +15,53 @@ class BorrowSlipsController extends BaseAuthController
     }
     public function index()
     {
-        $result = $this->borrowSlip->getAllBorrowSlips();
-        $this->view('borrowslip/index', [
+        $filters = [
+            'reader_name' => $_GET['reader_name'] ?? '',
+            'status' => $_GET['status'] ?? '',
+        ];
+        $hasFilter = false;
+        foreach ($filters as $v) {
+            if ($v !== '' && $v !== null) {
+                $hasFilter = true;
+                break;
+            }
+        }
+        if ($hasFilter) {
+            $result = $this->borrowSlip->getFilteredBorrowSlips($filters);
+        } else {
+            $result = $this->borrowSlip->getAllBorrowSlips();
+        }
+        $readers = (new \App\Models\Readers())->getAllReaders()['data'] ?? [];
+        $message = Session::flash('message');
+        $status = Session::flash('status');
+        $this->view('borrow_slips/index', [
             'borrowslips' => $result['data'] ?? [],
-            'message' => $result['message'],
-            'status' => $result['status']
+            'readers' => $readers,
+            'filters' => $filters,
+            'message' => $message !== null ? $message : ($result['message'] ?? ''),
+            'status' => $status !== null ? $status : ($result['status'] ?? null)
         ]);
     }
-    public function insertView() {
-        $this->view('borrowslip/add');
-    }
+
     public function insert() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'reader_id' => $_POST['reader_id'] ?? '',
-                'borrow_date' => $_POST['borrow_date'] ?? '',
-                'return_date' => $_POST['return_date'] ?? '',
-                'status' => $_POST['status'] ?? ''
+                'due_date' => $_POST['due_date'] ?? ''
             ];
             $result = $this->borrowSlip->createBorrowSlip($data);
-            $this->view('borrowslip/add', [
-                'message' => $result['message'],
-                'status' => $result['status']
-            ]);
+            if ($result['status']) {
+                $this->logCrudAction('CREATE', 'borrow_slips', null, null, $data);
+            }
+            Session::flash('message', $result['message']);
+            Session::flash('status', $result['status']);
+            header('Location: /borrowslips');
+            exit;
         } else {
-            $this->view('borrowslip/add');
+            $this->view('borrow_slips/index');
         }
     }
-    public function edit($id) {
-        $result = $this->borrowSlip->getBorrowSlipById($id);
-        $this->view('borrowslip/edit', [
-            'slip' => $result['data'] ?? null,
-            'message' => $result['message'],
-            'status' => $result['status']
-        ]);
-    }
+
     public function update($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [

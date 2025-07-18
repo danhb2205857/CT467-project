@@ -27,12 +27,11 @@ class BorrowSlips extends Model
     public function getAllBorrowSlips()
     {
         try {
-            $sql = 'SELECT bs.*, r.name as reader_name FROM borrow_slips bs
+            $query = 'SELECT bs.*, r.name as reader_name FROM borrow_slips bs
                     LEFT JOIN readers r ON bs.reader_id = r.id';
-            $data = $this->select($sql);
+            $data = $this->select($query);
             return [
                 'status' => true,
-                'message' => 'Lấy danh sách phiếu mượn thành công',
                 'data' => $data
             ];
         } catch (\Exception $e) {
@@ -46,7 +45,10 @@ class BorrowSlips extends Model
     public function getBorrowSlipById($id)
     {
         try {
-            $data = $this->getById($id);
+            $query = 'SELECT bs.*, r.name as reader_name FROM borrow_slips bs
+                    LEFT JOIN readers r ON bs.reader_id = r.id
+                    WHERE bs.id = :id LIMIT 1';
+            $data = $this->select($query, ['id' => $id], true);
             if ($data) {
                 return [
                     'status' => true,
@@ -70,7 +72,12 @@ class BorrowSlips extends Model
     public function createBorrowSlip($data)
     {
         try {
-            $result = $this->create($data);
+            $query = "INSERT INTO borrow_slips (reader_id, due_date) VALUES (:reader_id, :due_date)";
+            $params = [
+                'reader_id' => $data['reader_id'],
+                'due_date' => $data['due_date']
+            ];
+            $result = $this->insert($query, $params);
             if ($result) {
                 return [
                     'status' => true,
@@ -79,7 +86,7 @@ class BorrowSlips extends Model
             } else {
                 return [
                     'status' => false,
-                    'message' => 'Thêm phiếu mượn thất bại'
+                    'message' => 'Thêm phiếu mượn thất bại. Lỗi: ' . ($this->error ?? 'Không rõ nguyên nhân')
                 ];
             }
         } catch (\Exception $e) {
@@ -93,7 +100,16 @@ class BorrowSlips extends Model
     public function updateBorrowSlip($id, $data)
     {
         try {
-            $result = $this->updateById($id, $data);
+            $query = "UPDATE borrow_slips SET reader_id = :reader_id, borrow_date = :borrow_date, due_date = :due_date, return_date = :return_date, status = :status WHERE id = :id";
+            $params = [
+                'id' => $id,
+                'reader_id' => $data['reader_id'],
+                'borrow_date' => $data['borrow_date'] ?? null,
+                'due_date' => $data['due_date'] ?? null,
+                'return_date' => $data['return_date'] ?? null,
+                'status' => $data['status'] ?? null
+            ];
+            $result = $this->update($query, $params);
             if ($result) {
                 return [
                     'status' => true,
@@ -116,7 +132,8 @@ class BorrowSlips extends Model
     public function deleteBorrowSlip($id)
     {
         try {
-            $result = $this->deleteById($id);
+            $query = "DELETE FROM borrow_slips WHERE id = :id";
+            $result = $this->delete($query, ['id' => $id]);
             if ($result) {
                 return [
                     'status' => true,
@@ -132,6 +149,36 @@ class BorrowSlips extends Model
             return [
                 'status' => false,
                 'message' => 'Lỗi khi xóa phiếu mượn: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function getFilteredBorrowSlips($filters = [])
+    {
+        try {
+            $where = [];
+            $params = [];
+            $sql = 'SELECT bs.*, r.name as reader_name FROM borrow_slips bs LEFT JOIN readers r ON bs.reader_id = r.id';
+            if (!empty($filters['reader_name'])) {
+                $where[] = 'r.name LIKE :reader_name';
+                $params['reader_name'] = '%' . $filters['reader_name'] . '%';
+            }
+            if (!empty($filters['status'])) {
+                $where[] = 'bs.status = :status';
+                $params['status'] = $filters['status'];
+            }
+            if ($where) {
+                $sql .= ' WHERE ' . implode(' AND ', $where);
+            }
+            $data = $this->select($sql, $params);
+            return [
+                'status' => true,
+                'data' => $data
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'message' => 'Lỗi khi lọc phiếu mượn: ' . $e->getMessage()
             ];
         }
     }
