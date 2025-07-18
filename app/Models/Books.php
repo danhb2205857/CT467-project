@@ -185,6 +185,10 @@ class Books extends Model
                 $where[] = 'c.name LIKE :category';
                 $params['category'] = '%' . $filters['category'] . '%';
             }
+            if (!empty($filters['category_id'])) {
+                $where[] = 'b.category_id = :category_id';
+                $params['category_id'] = $filters['category_id'];
+            }
             if (!empty($filters['publisher'])) {
                 $where[] = 'b.publisher LIKE :publisher';
                 $params['publisher'] = '%' . $filters['publisher'] . '%';

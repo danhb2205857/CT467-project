@@ -21,7 +21,7 @@ class Categories extends Model
     public function getAllCategories()
     {
         try {
-            $query = "SELECT * FROM categories";
+            $query = "SELECT c.*, COUNT(b.id) as total_books FROM categories c LEFT JOIN books b ON c.id = b.category_id GROUP BY c.id ORDER BY c.id";
             $data = $this->select($query);
             return [
                 'status' => true,
