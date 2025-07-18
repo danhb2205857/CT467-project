@@ -16,7 +16,25 @@ class BooksController extends BaseAuthController
 
     public function index()
     {
-        $result = $this->book->getAllBooks();
+        $filters = [
+            'title' => $_GET['title'] ?? '',
+            'author' => $_GET['author'] ?? '',
+            'category' => $_GET['category'] ?? '',
+            'publisher' => $_GET['publisher'] ?? '',
+            'publish_year' => $_GET['publish_year'] ?? '',
+        ];
+        $hasFilter = false;
+        foreach ($filters as $v) {
+            if ($v !== '' && $v !== null) {
+                $hasFilter = true;
+                break;
+            }
+        }
+        if ($hasFilter) {
+            $result = $this->book->getFilteredBooks($filters);
+        } else {
+            $result = $this->book->getAllBooks();
+        }
         $authors = (new \App\Models\Authors())->getAllAuthors()['data'] ?? [];
         $categories = (new \App\Models\Categories())->getAllCategories()['data'] ?? [];
         $message = Session::flash('message');

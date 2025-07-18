@@ -163,4 +163,49 @@ class Books extends Model
             ];
         }
     }
+
+    public function getFilteredBooks($filters = [])
+    {
+        try {
+            $where = [];
+            $params = [];
+            if (!empty($filters['title'])) {
+                $where[] = 'b.title LIKE :title';
+                $params['title'] = '%' . $filters['title'] . '%';
+            }
+            if (!empty($filters['author'])) {
+                $where[] = 'a.name LIKE :author';
+                $params['author'] = '%' . $filters['author'] . '%';
+            }
+            if (!empty($filters['category'])) {
+                $where[] = 'c.name LIKE :category';
+                $params['category'] = '%' . $filters['category'] . '%';
+            }
+            if (!empty($filters['publisher'])) {
+                $where[] = 'b.publisher LIKE :publisher';
+                $params['publisher'] = '%' . $filters['publisher'] . '%';
+            }
+            if (!empty($filters['publish_year'])) {
+                $where[] = 'b.publish_year = :publish_year';
+                $params['publish_year'] = $filters['publish_year'];
+            }
+            $query = 'SELECT b.*, a.name as author_name, c.name as category_name 
+                    FROM books b
+                    LEFT JOIN authors a ON b.author_id = a.id
+                    LEFT JOIN categories c ON b.category_id = c.id';
+            if ($where) {
+                $query .= ' WHERE ' . implode(' AND ', $where);
+            }
+            $data = $this->select($query, $params);
+            return [
+                'status' => true,
+                'data' => $data
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'message' => 'Lỗi khi lọc sách: ' . $e->getMessage()
+            ];
+        }
+    }
 }

@@ -7,6 +7,79 @@
         <a href="/books/export-excel" class="btn btn-success">Xuất Excel</a>
     </div>
 </div>
+<?php
+$filters = [
+    'title' => $_GET['title'] ?? '',
+    'author' => $_GET['author'] ?? '',
+    'category' => $_GET['category'] ?? '',
+    'publisher' => $_GET['publisher'] ?? '',
+    'publish_year' => $_GET['publish_year'] ?? '',
+];
+$hasFilter = false;
+foreach ($filters as $v) {
+    if ($v !== '' && $v !== null) {
+        $hasFilter = true;
+        break;
+    }
+}
+?>
+<div class="mb-2 d-flex align-items-center flex-wrap">
+    <button class="btn btn-outline-primary me-2 mb-1" data-bs-toggle="modal" data-bs-target="#filterModal">
+        <i class="bi bi-funnel"></i> LỌC
+    </button>
+    <?php if ($hasFilter): ?>
+        <?php foreach ($filters as $key => $value): ?>
+            <?php if ($value !== '' && $value !== null): ?>
+                <span class="badge bg-light text-dark border me-2 mb-1">
+                    <?= htmlspecialchars($value) ?>
+                    <a href="<?= htmlspecialchars('/books?' . http_build_query(array_merge($filters, [$key => '']))) ?>" class="text-decoration-none ms-1" style="color: #888;">&times;</a>
+                </span>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <a href="/books" class="ms-2 text-primary text-decoration-none">Xóa tất cả</a>
+    <?php else: ?>
+        <span class="badge bg-light text-dark border me-2 mb-1">Tất cả</span>
+    <?php endif; ?>
+</div>
+<!-- Modal Lọc -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="filterModalLabel">Lọc sách</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="get" action="/books">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="filterTitle" class="form-label">Tên sách</label>
+            <input type="text" class="form-control" id="filterTitle" name="title" value="<?= htmlspecialchars($_GET['title'] ?? '') ?>">
+          </div>
+          <div class="mb-3">
+            <label for="filterAuthor" class="form-label">Tác giả</label>
+            <input type="text" class="form-control" id="filterAuthor" name="author" value="<?= htmlspecialchars($_GET['author'] ?? '') ?>">
+          </div>
+          <div class="mb-3">
+            <label for="filterCategory" class="form-label">Thể loại</label>
+            <input type="text" class="form-control" id="filterCategory" name="category" value="<?= htmlspecialchars($_GET['category'] ?? '') ?>">
+          </div>
+          <div class="mb-3">
+            <label for="filterPublisher" class="form-label">Nhà XB</label>
+            <input type="text" class="form-control" id="filterPublisher" name="publisher" value="<?= htmlspecialchars($_GET['publisher'] ?? '') ?>">
+          </div>
+          <div class="mb-3">
+            <label for="filterPublishYear" class="form-label">Năm XB</label>
+            <input type="number" class="form-control" id="filterPublishYear" name="publish_year" value="<?= htmlspecialchars($_GET['publish_year'] ?? '') ?>">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <button type="submit" class="btn btn-yellow">Lọc</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <?php if (!empty($message)): ?>
     <div id="alert-message" class="alert alert-<?= !empty($status) && $status ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
         <?= htmlspecialchars($message) ?>
