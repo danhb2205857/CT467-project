@@ -59,4 +59,16 @@ class ReadersController extends BaseAuthController
         header('Location: /readers');
         exit;
     }
+    public function findByPhone()
+    {
+        $phone = $_GET['phone'] ?? '';
+        $result = $this->reader->getReaderByPhone($phone);
+        header('Content-Type: application/json');
+        if ($result && !empty($result['data'])) {
+            echo json_encode(['name' => $result['data']['name']]);
+        } else {
+            echo json_encode([]);
+        }
+        exit;
+    }
 }

@@ -33,12 +33,15 @@ $router->get('/readers', 'ReadersController@index');
 $router->post('/readers', 'ReadersController@insert');
 $router->post('/readers/{id}', 'ReadersController@update');
 $router->get('/readers/delete/{id}', 'ReadersController@delete');
+$router->get('/readers/find-by-phone', 'ReadersController@findByPhone');
 
 // Borrow Slips
 $router->get('/borrowslips', 'BorrowSlipsController@index');
 $router->post('/borrowslips', 'BorrowSlipsController@insert');
 $router->post('/borrowslips/{id}', 'BorrowSlipsController@update');
 $router->get('/borrowslips/delete/{id}', 'BorrowSlipsController@delete');
+$router->get('/borrowslips/submit/{id}', 'BorrowSlipsController@submit');
+
 
 // Return Slips
 $router->get('/returnslips', 'ReturnSlipsController@index');

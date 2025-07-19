@@ -2,7 +2,6 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Danh sách Độc giả</h2>
     <div>
-        <button class="btn btn-yellow me-2" data-bs-toggle="modal" data-bs-target="#addReaderModal">Thêm độc giả</button>
         <button onclick="window.print()" class="btn btn-outline-secondary me-2">In bảng</button>
         <a href="/readers/export-excel" class="btn btn-success">Xuất Excel</a>
     </div>
@@ -17,9 +16,10 @@
     <thead class="table-warning">
         <tr>
             <th class="text-center" style="width: 5%;">STT</th>
-            <th style="width: 40%;">Tên độc giả</th>
-            <th style="width: 20%;">Ngày sinh</th>
-            <th style="width: 20%;">Số điện thoại</th>
+            <th style="width: 15%;">Tên độc giả</th>
+            <th style="width: 10%;">Số điện thoại</th>
+            <th class="text-center" style="width: 10%;">Số lần đã mượn</th>
+            <th style="width: 15%;">Số phiếu mượn hiện tại</th>
             <th class="text-center" style="width: 15%;">Hành động</th>
         </tr>
     </thead>
@@ -28,12 +28,13 @@
             <tr>
                 <td class="text-center"><?= $i + 1 ?></td>
                 <td><?= htmlspecialchars($reader['name']) ?></td>
-                <td><?= htmlspecialchars($reader['birth_date']) ?></td>
                 <td><?= htmlspecialchars($reader['phone']) ?></td>
+                <td class="text-center" ><?= htmlspecialchars($reader['borrowcount']) ?></td>
+                <td><?php  ?></td>
                 <td class="text-center">
                     <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editReaderModal"
                         data-id="<?= $reader['id'] ?>" data-name="<?= htmlspecialchars($reader['name']) ?>"
-                        data-birth_date="<?= htmlspecialchars($reader['birth_date']) ?>" data-phone="<?= htmlspecialchars($reader['phone']) ?>">
+                        data-phone="<?= htmlspecialchars($reader['phone']) ?>">
                         Sửa
                     </button>
                     <a href="/readers/delete/<?= $reader['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Xác nhận xóa?')">Xóa</a>

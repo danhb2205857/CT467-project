@@ -67,10 +67,9 @@ class Readers extends Model
     public function createReader($data)
     {
         try {
-            $query = "INSERT INTO readers (name, birth_date, phone) VALUES (?, ?, ?)";
+            $query = "INSERT INTO readers (name, phone, borrowcount) VALUES (?, ?, 0)";
             $result = $this->insert($query, [
                 $data['name'],
-                $data['birth_date'],
                 $data['phone']
             ]);
             if ($result) {
@@ -142,6 +141,41 @@ class Readers extends Model
                 'status' => false,
                 'message' => 'Lỗi khi xóa độc giả: ' . $e->getMessage()
             ];
+        }
+    }
+
+    public function getReaderByPhone($phone)
+    {
+        try {
+            $query = "SELECT id, name, phone FROM readers WHERE phone = ? LIMIT 1";
+            $data = $this->select($query, [$phone], true);
+            if ($data) {
+                return [
+                    'status' => true,
+                    'data' => $data
+                ];
+            } else {
+                return [
+                    'status' => false,
+                    'data' => null
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'message' => 'Lỗi khi lấy độc giả: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function increaseBorrowCount($readerId)
+    {
+        try {
+            $query = "UPDATE readers SET borrowcount = IFNULL(borrowcount,0) + 1 WHERE id = ?";
+            $result = $this->update($query, [$readerId]);
+            return $result ? true : false;
+        } catch (\Exception $e) {
+            return false;
         }
     }
 }

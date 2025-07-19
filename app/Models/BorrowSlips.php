@@ -27,7 +27,7 @@ class BorrowSlips extends Model
     public function getAllBorrowSlips()
     {
         try {
-            $query = 'SELECT bs.*, r.name as reader_name FROM borrow_slips bs
+            $query = 'SELECT bs.*, r.name as name FROM borrow_slips bs
                     LEFT JOIN readers r ON bs.reader_id = r.id';
             $data = $this->select($query);
             return [
@@ -72,10 +72,11 @@ class BorrowSlips extends Model
     public function createBorrowSlip($data)
     {
         try {
-            $query = "INSERT INTO borrow_slips (reader_id, due_date) VALUES (:reader_id, :due_date)";
+            $query = "INSERT INTO borrow_slips (reader_id, due_date, phone) VALUES (:reader_id, :due_date, :phone)";
             $params = [
                 'reader_id' => $data['reader_id'],
-                'due_date' => $data['due_date']
+                'due_date' => $data['due_date'],
+                'phone' => $data['phone']
             ];
             $result = $this->insert($query, $params);
             if ($result) {
@@ -152,20 +153,48 @@ class BorrowSlips extends Model
             ];
         }
     }
+    public function submitBorrowSlip($id)
+    {
+        try {
+            $query = "UPDATE borrow_slips SET status = '1', return_date = NOW() WHERE id = :id";
+            $params = [
+                'id' => $id
+            ];
+            $result = $this->update($query, $params);
+            if ($result) {
+                return [
+                    'status' => true,
+                    'message' => 'Cập nhật phiếu mượn thành công (đã trả sách)'
+                ];
+            } else {
+                return [
+                    'status' => false,
+                    'message' => 'Cập nhật phiếu mượn thất bại'
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'message' => 'Lỗi khi cập nhật phiếu mượn: ' . $e->getMessage()
+            ];
+        }
+    }
 
     public function getFilteredBorrowSlips($filters = [])
     {
         try {
             $where = [];
             $params = [];
-            $sql = 'SELECT bs.*, r.name as reader_name FROM borrow_slips bs LEFT JOIN readers r ON bs.reader_id = r.id';
-            if (!empty($filters['reader_name'])) {
-                $where[] = 'r.name LIKE :reader_name';
-                $params['reader_name'] = '%' . $filters['reader_name'] . '%';
+            $sql = 'SELECT bs.*, r.name as name 
+            FROM borrow_slips bs 
+            LEFT JOIN readers r ON bs.reader_id = r.id';
+            if (!empty($filters['phone'])) {
+                $where[] = 'r.phone LIKE :phone';
+                $params['phone'] = '%' . $filters['phone'] . '%';
             }
             if (!empty($filters['status'])) {
                 $where[] = 'bs.status = :status';
-                $params['status'] = $filters['status'];
+                $params['status'] = (string)$filters['status'];
             }
             if ($where) {
                 $sql .= ' WHERE ' . implode(' AND ', $where);
