@@ -36,7 +36,6 @@
             <li class="nav-item"><a class="nav-link" href="/categories">Thể loại</a></li>
             <li class="nav-item"><a class="nav-link" href="/readers">Độc giả</a></li>
             <li class="nav-item"><a class="nav-link" href="/borrowslips">Phiếu mượn</a></li>
-            <li class="nav-item"><a class="nav-link" href="/returnslips">Phiếu trả</a></li>
             <li class="nav-item"><a class="nav-link" href="/adminlogs">Log hoạt động admin</a></li>
         </ul>
     </nav>

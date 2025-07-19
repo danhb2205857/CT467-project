@@ -43,14 +43,6 @@ $router->get('/borrowslips/delete/{id}', 'BorrowSlipsController@delete');
 $router->get('/borrowslips/submit/{id}', 'BorrowSlipsController@submit');
 
 
-// Return Slips
-$router->get('/returnslips', 'ReturnSlipsController@index');
-$router->get('/returnslips/add', 'ReturnSlipsController@addView');
-$router->post('/returnslips', 'ReturnSlipsController@add');
-$router->get('/returnslips/edit/{id}', 'ReturnSlipsController@editView');
-$router->post('/returnslips/{id}', 'ReturnSlipsController@edit');
-$router->get('/returnslips/delete/{id}', 'ReturnSlipsController@delete');
-
 // Admin Logs
 $router->get('/adminlogs', 'AdminLogsController@index');
 $router->get('/adminlogs/show/{id}', 'AdminLogsController@show');
