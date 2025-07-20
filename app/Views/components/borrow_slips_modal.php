@@ -1,63 +1,3 @@
-<!-- Modal Add Borrow Slip -->
-<div class="modal fade" id="addBorrowSlipModal" tabindex="-1" aria-labelledby="addBorrowSlipModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="POST" action="/borrowslips">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addBorrowSlipModalLabel">Tạo phiếu mới</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="borrowSlipPhone" class="form-label">Số điện thoại</label>
-            <input type="text" class="form-control" id="borrowSlipPhone" name="phone" required autocomplete="off">
-          </div>
-          <div class="mb-3">
-            <label for="borrowSlipReaderName" class="form-label">Tên độc giả</label>
-            <input type="text" class="form-control" id="borrowSlipReaderName" name="reader_name" required>
-          </div>
-          <div class="mb-3">
-            <label for="dueDate" class="form-label">Ngày trả dự kiến</label>
-            <input type="date" class="form-control" id="dueDate" name="due_date" required>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Tạo</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-
-<script>
-  // Khi blur input số điện thoại, fetch tên độc giả nếu có
-  document.addEventListener('DOMContentLoaded', function() {
-    var phoneInput = document.getElementById('borrowSlipPhone');
-    var nameInput = document.getElementById('borrowSlipReaderName');
-    if (phoneInput && nameInput) {
-      phoneInput.addEventListener('blur', function() {
-        var phone = phoneInput.value.trim();
-        if (phone.length > 0) {
-          fetch('/readers/find-by-phone?phone=' + encodeURIComponent(phone))
-            .then(res => res.json())
-            .then(data => {
-              if (data && data.name) {
-                nameInput.value = data.name;
-              } else {
-                nameInput.placeholder = 'Độc giả mới';
-              }
-            })
-            .catch(() => {
-              nameInput.value = '';
-            });
-        } else {
-          nameInput.value = '';
-        }
-      });
-    }
-  });
-</script>
-
 <!-- Modal Edit Borrow Slip -->
 <div class="modal fade" id="editBorrowSlipModal" tabindex="-1" aria-labelledby="editBorrowSlipModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -88,5 +28,43 @@
         </div>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Modal Chi tiết Phiếu mượn -->
+<div class="modal fade" id="borrowSlipDetailModal" tabindex="-1" aria-labelledby="borrowSlipDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="borrowSlipDetailModalLabel">Chi tiết phiếu mượn</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="borrowSlipDetailInfo">
+          <!-- Thông tin phiếu mượn sẽ được render bằng JS -->
+        </div>
+        <hr>
+        <h6>Danh sách sách mượn</h6>
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle" id="borrowSlipBooksTable">
+            <thead class="table-light">
+              <tr>
+                <th>Tên sách</th>
+                <th>Ngày trả dự kiến</th>
+                <th>Trạng thái</th>
+                <th>Phí phạt</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Sách sẽ được render bằng JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" id="submitAllBooksBtn">Trả tất cả sách chưa trả</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
   </div>
 </div>

@@ -21,4 +21,13 @@ class BorrowSlipDetails extends Model
         $this->book_id = $data['book_id'] ?? null;
         $this->quantity = $data['quantity'] ?? 0;
     }
+
+    public function getDetailsByBorrowSlipId($borrow_slip_id)
+    {
+        $query = 'SELECT bsd.*, b.title as book_title, bsd.return_date as returned, bsd.due_date as return_date
+                  FROM borrow_slip_details bsd
+                  LEFT JOIN books b ON bsd.book_id = b.id
+                  WHERE bsd.borrow_slip_id = :borrow_slip_id';
+        return $this->select($query, ['borrow_slip_id' => $borrow_slip_id]);
+    }
 }

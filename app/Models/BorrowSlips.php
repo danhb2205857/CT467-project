@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use App\Core\Model;
@@ -10,7 +11,7 @@ class BorrowSlips extends Model
     public $borrow_date;
     public $return_date;
     public $status;
-    
+
     protected $table = 'borrow_slips';
     protected $primaryKey = 'id';
 
@@ -28,7 +29,18 @@ class BorrowSlips extends Model
     {
         try {
             $query = 'SELECT bs.*, r.name as name FROM borrow_slips bs
-                    LEFT JOIN readers r ON bs.reader_id = r.id';
+          LEFT JOIN readers r ON bs.reader_id = r.id
+          ORDER BY 
+            CASE 
+              WHEN bs.status = 2 THEN 2
+              WHEN bs.status = 0 THEN 1
+              WHEN bs.status = 1 THEN 0
+              ELSE 3
+            END,
+            CASE 
+              WHEN bs.status = 1 THEN bs.return_date
+              ELSE NULL
+            END DESC';
             $data = $this->select($query);
             return [
                 'status' => true,

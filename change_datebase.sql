@@ -20,3 +20,7 @@ CHANGE COLUMN `due_dated` `return_date` TIMESTAMP NULL ;
 
 ALTER TABLE `library_management`.`borrow_slips` 
 CHANGE COLUMN `status` `status` ENUM('0', '1', '2') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NOT NULL DEFAULT '0' ;
+
+
+ALTER TABLE `library_management`.`borrow_slip_details` 
+ADD COLUMN `due_date` DATE NULL AFTER `fine_amount`;

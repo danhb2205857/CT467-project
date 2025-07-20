@@ -132,4 +132,17 @@ class BooksController extends BaseAuthController
         header('Location: /books');
         exit;
     }
+
+    public function findById()
+    {
+        $id = $_GET['id'] ?? '';
+        $result = $this->book->getBookById($id);
+        header('Content-Type: application/json');
+        if ($result && !empty($result['data'])) {
+            echo json_encode($result['data']);
+        } else {
+            echo json_encode([]);
+        }
+        exit;
+    }
 }

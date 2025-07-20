@@ -70,7 +70,12 @@ class BorrowSlipsController extends BaseAuthController
                         $db->rollBack();
                         Session::flash('message', 'Không thể tạo độc giả mới!');
                         Session::flash('status', false);
-                        header('Location: /borrowslips');
+                        $message = Session::flash('message');
+                        $status = Session::flash('status');
+                        $this->view('home/home', [
+                            'message' => $message !== null ? $message : ($result['message'] ?? ''),
+                            'status' => $status !== null ? $status : ($result['status'] ?? null)
+                        ]);
                         exit;
                     }
                 }
@@ -81,24 +86,41 @@ class BorrowSlipsController extends BaseAuthController
                 ];
                 $result = $this->borrowSlip->createBorrowSlip($data);
                 if ($result['status']) {
+                    $borrow_slip_id = $this->borrowSlip->getLastInsertId();
+                    $book_ids = isset($_POST['book_ids']) ? explode(',', $_POST['book_ids']) : [];
+                    foreach ($book_ids as $book_id) {
+                        if ($book_id) {
+                            $query = "INSERT INTO borrow_slip_details (borrow_slip_id, book_id, quantity, due_date) VALUES (?, ?, 1, ?)";
+                            $this->borrowSlip->insert($query, [$borrow_slip_id, $book_id, $due_date]);
+                        }
+                    }
                     $this->logCrudAction('CREATE', 'borrow_slips', null, null, $data);
                     $db->commit();
                 } else {
                     $db->rollBack();
                 }
-                Session::flash('message', $result['message']);
-                Session::flash('status', $result['status']);
-                header('Location: /borrowslips');
+                Session::flash('message', 'Tạo phiếu mượn thành công!');
+                Session::flash('status', true);
+                header('Location: ' .'/');
+                // $message = Session::flash('message');
+                // $status = Session::flash('status');
+                // $this->view('home/home', [
+                //     'message' => $message !== null ? $message : ($result['message'] ?? ''),
+                //     'status' => $status !== null ? $status : ($result['status'] ?? null)
+                // ]);
                 exit;
             } catch (\Exception $e) {
                 $db->rollBack();
-                Session::flash('message', 'Lỗi hệ thống: ' . $e->getMessage());
+                Session::flash('message', 'Lỗi hệ thống: ');
                 Session::flash('status', false);
-                header('Location: /borrowslips');
+                $message = Session::flash('message');
+                $status = Session::flash('status');
+                $this->view('home/home', [
+                    'message' => $message !== null ? $message : ($result['message'] ?? ''),
+                    'status' => $status !== null ? $status : ($result['status'] ?? null)
+                ]);
                 exit;
             }
-        } else {
-            $this->view('borrow_slips/index');
         }
     }
 
@@ -130,5 +152,38 @@ class BorrowSlipsController extends BaseAuthController
         if($result['status']) {
             header('Location: /borrowslips');
         }
+    }
+
+    public function details($id) {
+        $borrowSlip = $this->borrowSlip->getBorrowSlipById($id);
+        $detailsModel = new \App\Models\BorrowSlipDetails();
+        $books = $detailsModel->getDetailsByBorrowSlipId($id);
+        $this->json([
+            'status' => $borrowSlip['status'] && $books !== false,
+            'slip' => $borrowSlip['data'] ?? null,
+            'books' => $books ?? [],
+        ]);
+    }
+
+    public function submitBook($detail_id) {
+        $db = \App\Core\Database::getInstance()->getConnection();
+        $query = "UPDATE borrow_slip_details SET returned = 1, return_date = NOW() WHERE id = ?";
+        $stmt = $db->prepare($query);
+        $success = $stmt->execute([$detail_id]);
+        $this->json([
+            'status' => $success,
+            'message' => $success ? 'Đã trả sách thành công!' : 'Trả sách thất bại!'
+        ]);
+    }
+
+    public function submitAllBooks($slip_id) {
+        $db = \App\Core\Database::getInstance()->getConnection();
+        $query = "UPDATE borrow_slip_details SET returned = 1, return_date = NOW() WHERE borrow_slip_id = ? AND (returned IS NULL OR returned = 0)";
+        $stmt = $db->prepare($query);
+        $success = $stmt->execute([$slip_id]);
+        $this->json([
+            'status' => $success,
+            'message' => $success ? 'Đã trả tất cả sách thành công!' : 'Trả sách thất bại!'
+        ]);
     }
 }

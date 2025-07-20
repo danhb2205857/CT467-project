@@ -1,7 +1,9 @@
 <?php
 
 // Home page
-$router->get('/', 'DashboardController@index');
+$router->get('/', 'HomeController@index');
+
+$router->get('/dashboard', 'DashboardController@index');
 $router->get('/export', 'DashboardController@exportExcel');
 
 // Authentication routes
@@ -15,6 +17,7 @@ $router->get('/books', 'BooksController@index');
 $router->post('/books', 'BooksController@insert');
 $router->post('/books/{id}', 'BooksController@update');
 $router->get('/books/delete/{id}', 'BooksController@delete');
+$router->get('/books/find-by-id', 'BooksController@findById');
 
 // Authors
 $router->get('/authors', 'AuthorsController@index');
@@ -41,6 +44,9 @@ $router->post('/borrowslips', 'BorrowSlipsController@insert');
 $router->post('/borrowslips/{id}', 'BorrowSlipsController@update');
 $router->get('/borrowslips/delete/{id}', 'BorrowSlipsController@delete');
 $router->get('/borrowslips/submit/{id}', 'BorrowSlipsController@submit');
+$router->get('/borrowslips/details/{id}', 'BorrowSlipsController@details');
+$router->post('/borrowslips/submit-book/{id}', 'BorrowSlipsController@submitBook');
+$router->post('/borrowslips/submit-all/{id}', 'BorrowSlipsController@submitAllBooks');
 
 
 // Admin Logs
