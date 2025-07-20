@@ -19,7 +19,7 @@
             <th style="width: 15%;">Tên độc giả</th>
             <th style="width: 10%;">Số điện thoại</th>
             <th class="text-center" style="width: 10%;">Số lần đã mượn</th>
-            <th style="width: 15%;">Số phiếu mượn hiện tại</th>
+            <th class="text-center" style="width: 15%;">Số sách đã mượn</th>
             <th class="text-center" style="width: 15%;">Hành động</th>
         </tr>
     </thead>
@@ -29,8 +29,17 @@
                 <td class="text-center"><?= $i + 1 ?></td>
                 <td><?= htmlspecialchars($reader['name']) ?></td>
                 <td><?= htmlspecialchars($reader['phone']) ?></td>
-                <td class="text-center" ><?= htmlspecialchars($reader['borrowcount']) ?></td>
-                <td><?php  ?></td>
+                <td class="text-center" ><?php if(!empty($reader['borrowcount'])): ?>
+                    <?= htmlspecialchars($reader['borrowcount']) ?>
+                    <?php else: ?>
+                        0
+                    <?php endif; ?></td>
+                <td class="text-center"><?php if(!empty($reader['bookcount'])): ?>
+                    <?= htmlspecialchars($reader['bookcount']) ?>
+                    <?php else: ?>
+                        0
+                    <?php endif; ?>
+                </td>
                 <td class="text-center">
                     <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editReaderModal"
                         data-id="<?= $reader['id'] ?>" data-name="<?= htmlspecialchars($reader['name']) ?>"

@@ -24,3 +24,19 @@ CHANGE COLUMN `status` `status` ENUM('0', '1', '2') CHARACTER SET 'utf8mb4' COLL
 
 ALTER TABLE `library_management`.`borrow_slip_details` 
 ADD COLUMN `due_date` DATE NULL AFTER `fine_amount`;
+
+ALTER TABLE `library_management`.`readers` 
+ADD COLUMN `bookcount` INT NULL DEFAULT NULL AFTER `borrowcount`;
+
+DELIMITER $$
+CREATE TRIGGER trg_after_insert_borrow_detail_update_bookcount
+AFTER INSERT ON borrow_slip_details
+FOR EACH ROW
+BEGIN
+    DECLARE v_reader_id INT;
+    SELECT reader_id INTO v_reader_id FROM borrow_slips WHERE id = NEW.borrow_slip_id;
+    UPDATE readers
+    SET bookcount = IFNULL(bookcount, 0) + NEW.quantity
+    WHERE id = v_reader_id;
+END$$
+DELIMITER ;

@@ -40,7 +40,12 @@ class BorrowSlips extends Model
             CASE 
               WHEN bs.status = 1 THEN bs.return_date
               ELSE NULL
-            END DESC';
+            END,
+            CASE 
+              WHEN bs.status = 0 THEN bs.borrow_date
+              ELSE NULL
+            END
+             DESC';
             $data = $this->select($query);
             return [
                 'status' => true,
