@@ -126,3 +126,18 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
+
+-- kiểm tra quantity sách
+DELIMITER $$
+CREATE FUNCTION fn_check_book_availability(p_book_id INT) 
+RETURNS int(11)
+READS SQL DATA
+DETERMINISTIC
+BEGIN
+    DECLARE available_count INT DEFAULT 0;
+    SELECT available INTO available_count 
+    FROM books 
+    WHERE id = p_book_id;
+    RETURN IFNULL(available_count, 0);
+END$$
+DELIMITER ;
