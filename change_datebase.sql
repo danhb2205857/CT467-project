@@ -28,6 +28,8 @@ ADD COLUMN `due_date` DATE NULL AFTER `fine_amount`;
 ALTER TABLE `library_management`.`readers` 
 ADD COLUMN `bookcount` INT NULL DEFAULT NULL AFTER `borrowcount`;
 
+
+-- cập nhật reader bookcount
 DELIMITER $$
 CREATE TRIGGER trg_after_insert_borrow_detail_update_bookcount
 AFTER INSERT ON borrow_slip_details
@@ -41,6 +43,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+-- cập nhật reader borrowcount
 DELIMITER $$
 CREATE TRIGGER trg_after_insert_borrow_slip_update_borrowcount
 AFTER INSERT ON borrow_slips
@@ -52,7 +55,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-
+-- lọc theo status
 DELIMITER $$
 CREATE PROCEDURE sp_get_borrow_slips_by_status(IN p_status VARCHAR(10))
 BEGIN
@@ -73,5 +76,53 @@ BEGIN
             WHEN bs.status = '1' THEN bs.return_date
             ELSE NULL
         END DESC;
+END$$
+DELIMITER ;
+
+-- tính tiền phạt, set status thành 2
+DELIMITER $$
+
+CREATE EVENT IF NOT EXISTS ev_update_overdue_fines
+ON SCHEDULE EVERY 1 DAY
+STARTS (TIMESTAMP(CURRENT_DATE) + INTERVAL 1 DAY)
+DO
+BEGIN
+    UPDATE borrow_slips
+    SET status = '2'
+    WHERE status = '0' AND due_date < CURDATE();
+
+    UPDATE borrow_slip_details bsd
+    JOIN borrow_slips bs ON bsd.borrow_slip_id = bs.id
+    SET bsd.fine_amount = DATEDIFF(CURDATE(), bs.due_date) * 5000
+    WHERE bs.status = '2'
+      AND (bsd.return_date IS NULL OR bsd.return_date > bs.due_date)
+      AND bs.due_date < CURDATE();
+END$$
+
+DELIMITER ;
+
+-- tự trừ sách khi mượn
+DELIMITER $$
+CREATE TRIGGER trg_after_insert_borrow_detail
+AFTER INSERT ON borrow_slip_details
+FOR EACH ROW
+BEGIN
+    UPDATE books 
+    SET available = available - NEW.quantity 
+    WHERE id = NEW.book_id;
+END$$
+DELIMITER ;
+
+-- tự cộng sách khi trả
+DELIMITER $$
+CREATE TRIGGER trg_after_update_borrow_detail
+AFTER UPDATE ON borrow_slips
+FOR EACH ROW
+BEGIN
+    IF NEW.return_date IS NOT NULL AND OLD.return_date IS NULL THEN
+        UPDATE books 
+        SET available = available + OLD.quantity 
+        WHERE id = OLD.book_id;
+    END IF;
 END$$
 DELIMITER ;

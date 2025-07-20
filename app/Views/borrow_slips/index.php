@@ -81,7 +81,6 @@
 </table>
 <?php include_once __DIR__ . '/../components/borrow_slips_modal.php'; ?>
 <script>document.addEventListener('DOMContentLoaded', function() {
-    // Modal sửa phiếu mượn cũ
     var editModal = document.getElementById('editBorrowSlipModal');
     if (editModal) {
         editModal.addEventListener('show.bs.modal', function(event) {
@@ -93,7 +92,7 @@
         });
     }
 
-    // Gắn sự kiện click cho từng ô (td) có class clickable-cell
+    // class clickable-cell
     document.querySelectorAll('td.clickable-cell').forEach(function(cell) {
         cell.style.cursor = 'pointer';
         cell.addEventListener('click', function(e) {
@@ -125,8 +124,8 @@
                         if (!returned) hasUnreturned = true;
                         booksHtml += `<tr>
                             <td>${book.book_title || ''}</td>
-                            <td>${book.return_date ? book.return_date : ''}</td>
-                            <td>${returned ? '<span class="text-success">Đã trả</span>' : '<span class="text-danger">Chưa trả</span>'}</td>
+                            <td>${book.due_date ? book.due_date : ''}</td>
+                            <td>${book.return_date ? '<span class="text-success">Đã trả</span>' : '<span class="text-danger">Chưa trả</span>'}</td>
                             <td>${book.fine_amount}</td>
                         </tr>`;
                     });

@@ -161,9 +161,11 @@ class BorrowSlipsController extends BaseAuthController
     }
     public function submit($id)
     {
-        $result = $this->borrowSlip->submitBorrowSlip($id);
+        $result = $this->borrowSlip->submitBorrowSlipAndDetails($id);
         if ($result['status']) {
             header('Location: /borrowslips');
+        } else {
+            // Xử lý lỗi nếu cần
         }
     }
 
@@ -179,27 +181,5 @@ class BorrowSlipsController extends BaseAuthController
         ]);
     }
 
-    public function submitBook($detail_id)
-    {
-        $db = \App\Core\Database::getInstance()->getConnection();
-        $query = "UPDATE borrow_slip_details SET returned = 1, return_date = NOW() WHERE id = ?";
-        $stmt = $db->prepare($query);
-        $success = $stmt->execute([$detail_id]);
-        $this->json([
-            'status' => $success,
-            'message' => $success ? 'Đã trả sách thành công!' : 'Trả sách thất bại!'
-        ]);
-    }
 
-    public function submitAllBooks($slip_id)
-    {
-        $db = \App\Core\Database::getInstance()->getConnection();
-        $query = "UPDATE borrow_slip_details SET returned = 1, return_date = NOW() WHERE borrow_slip_id = ? AND (returned IS NULL OR returned = 0)";
-        $stmt = $db->prepare($query);
-        $success = $stmt->execute([$slip_id]);
-        $this->json([
-            'status' => $success,
-            'message' => $success ? 'Đã trả tất cả sách thành công!' : 'Trả sách thất bại!'
-        ]);
-    }
 }

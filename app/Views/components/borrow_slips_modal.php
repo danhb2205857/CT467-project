@@ -41,7 +41,7 @@
       </div>
       <div class="modal-body">
         <div id="borrowSlipDetailInfo">
-          <!-- Thông tin phiếu mượn sẽ được render bằng JS -->
+
         </div>
         <hr>
         <h6>Danh sách sách mượn</h6>
@@ -56,7 +56,7 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Sách sẽ được render bằng JS -->
+
             </tbody>
           </table>
         </div>

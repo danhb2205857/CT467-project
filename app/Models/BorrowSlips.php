@@ -197,6 +197,29 @@ class BorrowSlips extends Model
         }
     }
 
+    public function submitBorrowSlipAndDetails($id)
+    {
+        try {
+            $query1 = "UPDATE borrow_slip_details SET return_date = NOW() 
+                        WHERE borrow_slip_id = :id AND (return_date IS NULL OR return_date = 0)";
+            $params1 = ['id' => $id];
+            $result1 = $this->update($query1, $params1);
+
+            $query2 = "UPDATE borrow_slips SET status = '1', return_date = NOW() 
+                        WHERE id = :id";
+            $params2 = ['id' => $id];
+            $result2 = $this->update($query2, $params2);
+
+            if ($result1 !== false && $result2 !== false) {
+                return ['status' => true, 'message' => 'Đã trả tất cả sách thành công!'];
+            } else {
+                return ['status' => false, 'message' => 'Trả sách thất bại!'];
+            }
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => 'Trả sách thất bại!'];
+        }
+    }
+
     public function getFilteredBorrowSlips($filters = [])
     {
         try {
