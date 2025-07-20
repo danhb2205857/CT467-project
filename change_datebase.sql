@@ -40,3 +40,14 @@ BEGIN
     WHERE id = v_reader_id;
 END$$
 DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER trg_after_insert_borrow_slip_update_borrowcount
+AFTER INSERT ON borrow_slips
+FOR EACH ROW
+BEGIN
+    UPDATE readers
+    SET borrowcount = IFNULL(borrowcount, 0) + 1
+    WHERE id = NEW.reader_id;
+END$$
+DELIMITER ;
