@@ -35,7 +35,7 @@
             </div>
             <div class="row mt-4">
                 <div class="col-12 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary w-50 py-3" style="font-size: 1.3rem; font-weight: 600; border-radius: 10px;">Thêm</button>
+                    <button type="submit" class="btn btn-primary w-50 py-3" style="font-size: 1.3rem; font-weight: 600; border-radius: 10px; background: #ffd54f; border: #ffd54f;">Thêm</button>
                 </div>
             </div>
         </form>

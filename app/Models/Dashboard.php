@@ -35,4 +35,21 @@ class Dashboard extends Model
         $result = $this->select($sql, [], true);
         return $result['total'] ?? 0;
     }
+
+    public function getTop10Readers()
+    {
+        $sql = "SELECT name, phone, bookcount FROM readers ORDER BY bookcount DESC LIMIT 10";
+        return $this->select($sql);
+    }
+
+    public function getTop10Books()
+    {
+        $sql = "SELECT b.title, SUM(bsd.quantity) as total_borrowed
+                FROM borrow_slip_details bsd
+                JOIN books b ON bsd.book_id = b.id
+                GROUP BY b.id, b.title
+                ORDER BY total_borrowed DESC
+                LIMIT 10";
+        return $this->select($sql);
+    }
 } 

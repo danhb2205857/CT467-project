@@ -16,6 +16,8 @@ class DashboardController extends BaseAuthController
             'totalCategories' => $dashboard->getTotalCategories(),
             'totalBooks' => $dashboard->getTotalBooks(),
             'totalBorrowedBooks' => $dashboard->getTotalBorrowedBooks(),
+            'top10Readers' => $dashboard->getTop10Readers(),
+            'top10Books' => $dashboard->getTop10Books(),
         ];
         $this->view('dashboard', $data);
     }
