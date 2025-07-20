@@ -117,22 +117,30 @@
                     .then(res => res.json())
                     .then(data => {
                         if (data && data.title) {
-                            bookTitleResult.innerHTML =
-                                `<div class='d-flex align-items-center gap-2'><span class='badge bg-secondary' style='font-size:1.1rem;'>${data.title}</span>` +
-                                (selectedBookIds.includes(data.id.toString()) ?
-                                    `<span class='text-success ms-2'>Đã chọn</span>` :
-                                    `<button type='button' class='btn btn-sm btn-outline-primary ms-2' id='addBookBtn' style='font-size:1rem;'>Chọn</button>`) +
-                                `</div>`;
-                            if (!selectedBookIds.includes(data.id.toString())) {
-                                document.getElementById('addBookBtn').onclick = function() {
-                                    selectedBookIds.push(data.id.toString());
-                                    selectedBookTitles.push(data.title);
-                                    renderSelectedBooks();
-                                    bookCodeInput.value = '';
-                                    bookTitleResult.innerHTML = '';
-                                    bookCodeInput.focus();
-                                }
-                            }
+                            fetch('/books/check-available?id=' + encodeURIComponent(code))
+                                .then(res2 => res2.json())
+                                .then(avail => {
+                                    if (avail.available > 0) {
+                                        bookTitleResult.innerHTML =
+                                            `<div class='d-flex align-items-center gap-2'><span class='badge bg-secondary' style='font-size:1.1rem;'>${data.title}</span>` +
+                                            (selectedBookIds.includes(data.id.toString()) ?
+                                                `<span class='text-success ms-2'>Đã chọn</span>` :
+                                                `<button type='button' class='btn btn-sm btn-outline-primary ms-2' id='addBookBtn' style='font-size:1rem;'>Chọn</button>`) +
+                                            `</div>`;
+                                        if (!selectedBookIds.includes(data.id.toString())) {
+                                            document.getElementById('addBookBtn').onclick = function() {
+                                                selectedBookIds.push(data.id.toString());
+                                                selectedBookTitles.push(data.title);
+                                                renderSelectedBooks();
+                                                bookCodeInput.value = '';
+                                                bookTitleResult.innerHTML = '';
+                                                bookCodeInput.focus();
+                                            }
+                                        }
+                                    } else {
+                                        bookTitleResult.innerHTML = `<span class='text-danger'>Sách đã hết số lượng</span>`;
+                                    }
+                                });
                         } else {
                             bookTitleResult.innerHTML = `<span class='text-danger'>Không tìm thấy truyện</span>`;
                         }

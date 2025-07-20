@@ -216,4 +216,11 @@ class Books extends Model
             ];
         }
     }
+
+    public function checkAvailable($id)
+    {
+        $sql = 'SELECT fn_check_book_availability(:id) AS available';
+        $row = $this->select($sql, ['id' => $id], true);
+        return (int)($row['available'] ?? 0);
+    }
 }

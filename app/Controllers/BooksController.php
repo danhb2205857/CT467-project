@@ -145,4 +145,12 @@ class BooksController extends BaseAuthController
         }
         exit;
     }
+
+    public function checkAvailable()
+    {
+        $id = $_GET['id'] ?? null;
+        $model = new \App\Models\Books();
+        $available = $model->checkAvailable($id);
+        $this->json(['available' => $available]);
+    }
 }

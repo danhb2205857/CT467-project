@@ -18,6 +18,7 @@ $router->post('/books', 'BooksController@insert');
 $router->post('/books/{id}', 'BooksController@update');
 $router->get('/books/delete/{id}', 'BooksController@delete');
 $router->get('/books/find-by-id', 'BooksController@findById');
+$router->get('/books/check-available', 'BooksController@checkAvailable');
 
 // Authors
 $router->get('/authors', 'AuthorsController@index');
