@@ -22,8 +22,8 @@ use App\Core\Session;
             <button class="mobile-toggle me-2" id="sidebarToggle">
                 ☰
             </button>
-            <a class="navbar-brand" href="/statistics">📚 Quản trị Thư viện</a>
-            <div class="d-flex align-items-center">
+            <a class="navbar-brand mx-3" href="/statistics">📚 Quản trị Thư viện</a>
+            <div class="d-flex align-items-center mx-3">
                 <span class="text-white me-3">Xin chào, <?php echo Session::get('adminName') ?></span>
                 <a href="/logout" class="btn btn-outline-light btn-sm">Đăng xuất</a>
             </div>
