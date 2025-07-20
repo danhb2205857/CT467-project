@@ -168,14 +168,4 @@ class Readers extends Model
         }
     }
 
-    public function increaseBorrowCount($readerId)
-    {
-        try {
-            $query = "UPDATE readers SET borrowcount = IFNULL(borrowcount,0) + 1 WHERE id = ?";
-            $result = $this->update($query, [$readerId]);
-            return $result ? true : false;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
 }

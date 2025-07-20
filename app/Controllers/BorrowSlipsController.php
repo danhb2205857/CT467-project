@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Constants\Index;
@@ -27,7 +28,17 @@ class BorrowSlipsController extends BaseAuthController
                 break;
             }
         }
-        if ($hasFilter) {
+        $result = [];
+
+        if ($filters['status'] !== '' && $filters['phone'] === '') {
+            // Gọi procedure lọc theo trạng thái
+            $db = \App\Core\Database::getInstance()->getConnection();
+            $stmt = $db->prepare("CALL sp_get_borrow_slips_by_status(:status)");
+            $stmt->bindValue(':status', $filters['status']);
+            $stmt->execute();
+            $result['data'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+        } else if ($hasFilter) {
             $result = $this->borrowSlip->getFilteredBorrowSlips($filters);
         } else {
             $result = $this->borrowSlip->getAllBorrowSlips();
@@ -44,7 +55,8 @@ class BorrowSlipsController extends BaseAuthController
         ]);
     }
 
-    public function insert() {
+    public function insert()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db = \App\Core\Database::getInstance()->getConnection();
             $db->beginTransaction();
@@ -56,7 +68,6 @@ class BorrowSlipsController extends BaseAuthController
                 $reader = $readerModel->getReaderByPhone($phone);
                 if ($reader && !empty($reader['data'])) {
                     $reader_id = $reader['data']['id'];
-                    $readerModel->increaseBorrowCount($reader_id);
                 } else {
                     $create = $readerModel->createReader([
                         'name' => $reader_name,
@@ -65,7 +76,6 @@ class BorrowSlipsController extends BaseAuthController
                     if ($create['status']) {
                         $reader = $readerModel->getReaderByPhone($phone);
                         $reader_id = $reader['data']['id'];
-                        $readerModel->increaseBorrowCount($reader_id);
                     } else {
                         $db->rollBack();
                         Session::flash('message', 'Không thể tạo độc giả mới!');
@@ -101,7 +111,7 @@ class BorrowSlipsController extends BaseAuthController
                 }
                 Session::flash('message', 'Tạo phiếu mượn thành công!');
                 Session::flash('status', true);
-                header('Location: ' .'/');
+                header('Location: ' . '/');
                 // $message = Session::flash('message');
                 // $status = Session::flash('status');
                 // $this->view('home/home', [
@@ -124,7 +134,8 @@ class BorrowSlipsController extends BaseAuthController
         }
     }
 
-    public function update($id) {
+    public function update($id)
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'reader_id' => $_POST['reader_id'] ?? '',
@@ -141,20 +152,23 @@ class BorrowSlipsController extends BaseAuthController
             ]);
         }
     }
-    public function delete($id) {
+    public function delete($id)
+    {
         $result = $this->borrowSlip->deleteBorrowSlip($id);
-        if($result['status']) {
+        if ($result['status']) {
             header('Location: /borrowslips');
         }
     }
-    public function submit($id) {
+    public function submit($id)
+    {
         $result = $this->borrowSlip->submitBorrowSlip($id);
-        if($result['status']) {
+        if ($result['status']) {
             header('Location: /borrowslips');
         }
     }
 
-    public function details($id) {
+    public function details($id)
+    {
         $borrowSlip = $this->borrowSlip->getBorrowSlipById($id);
         $detailsModel = new \App\Models\BorrowSlipDetails();
         $books = $detailsModel->getDetailsByBorrowSlipId($id);
@@ -165,7 +179,8 @@ class BorrowSlipsController extends BaseAuthController
         ]);
     }
 
-    public function submitBook($detail_id) {
+    public function submitBook($detail_id)
+    {
         $db = \App\Core\Database::getInstance()->getConnection();
         $query = "UPDATE borrow_slip_details SET returned = 1, return_date = NOW() WHERE id = ?";
         $stmt = $db->prepare($query);
@@ -176,7 +191,8 @@ class BorrowSlipsController extends BaseAuthController
         ]);
     }
 
-    public function submitAllBooks($slip_id) {
+    public function submitAllBooks($slip_id)
+    {
         $db = \App\Core\Database::getInstance()->getConnection();
         $query = "UPDATE borrow_slip_details SET returned = 1, return_date = NOW() WHERE borrow_slip_id = ? AND (returned IS NULL OR returned = 0)";
         $stmt = $db->prepare($query);

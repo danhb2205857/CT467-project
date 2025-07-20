@@ -51,3 +51,27 @@ BEGIN
     WHERE id = NEW.reader_id;
 END$$
 DELIMITER ;
+
+
+DELIMITER $$
+CREATE PROCEDURE sp_get_borrow_slips_by_status(IN p_status VARCHAR(10))
+BEGIN
+    SELECT 
+        bs.*, 
+        r.name as name
+    FROM borrow_slips bs
+    LEFT JOIN readers r ON bs.reader_id = r.id
+    WHERE (p_status = '' OR bs.status = p_status)
+    ORDER BY 
+        CASE 
+            WHEN bs.status = '2' THEN 0
+            WHEN bs.status = '0' THEN 1
+            WHEN bs.status = '1' THEN 2
+            ELSE 3
+        END,
+        CASE 
+            WHEN bs.status = '1' THEN bs.return_date
+            ELSE NULL
+        END DESC;
+END$$
+DELIMITER ;
