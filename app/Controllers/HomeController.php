@@ -22,7 +22,6 @@ class HomeController extends BaseAuthController
                 $reader = $readerModel->getReaderByPhone($phone);
                 if ($reader && !empty($reader['data'])) {
                     $reader_id = $reader['data']['id'];
-                    $readerModel->increaseBorrowCount($reader_id);
                 } else {
                     $create = $readerModel->createReader([
                         'name' => $reader_name,
@@ -31,7 +30,6 @@ class HomeController extends BaseAuthController
                     if ($create['status']) {
                         $reader = $readerModel->getReaderByPhone($phone);
                         $reader_id = $reader['data']['id'];
-                        $readerModel->increaseBorrowCount($reader_id);
                     } else {
                         $db->rollBack();
                         Session::flash('message', 'Không thể tạo độc giả mới!');

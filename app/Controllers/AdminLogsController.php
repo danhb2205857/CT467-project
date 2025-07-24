@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Core\Controller;
@@ -27,7 +28,7 @@ class AdminLogsController extends Controller
     public function show($id)
     {
         $log = $this->adminLog->select("SELECT * FROM admin_logs WHERE id = ?", [$id], true);
-        
+
         // Nếu là AJAX request, trả về nội dung không có layout
         if (isset($_GET['ajax'])) {
             echo '<div class="card">
@@ -49,7 +50,7 @@ class AdminLogsController extends Controller
             </div>';
             exit;
         }
-        
+
         // Nếu không phải AJAX, redirect về trang chính
         $this->redirect('/adminlogs');
     }
@@ -63,33 +64,33 @@ class AdminLogsController extends Controller
             'date_from' => $_GET['date_from'] ?? null,
             'date_to' => $_GET['date_to'] ?? null
         ];
-        
+
         // Xây dựng query dựa trên filter
         $query = "SELECT * FROM admin_logs WHERE 1=1";
         $params = [];
-        
+
         if (!empty($filters['admin_id'])) {
             $query .= " AND admin_id = ?";
             $params[] = $filters['admin_id'];
         }
-        
+
         if (!empty($filters['action_type'])) {
             $query .= " AND action_type = ?";
             $params[] = $filters['action_type'];
         }
-        
+
         if (!empty($filters['date_from'])) {
             $query .= " AND DATE(created_at) >= ?";
             $params[] = $filters['date_from'];
         }
-        
+
         if (!empty($filters['date_to'])) {
             $query .= " AND DATE(created_at) <= ?";
             $params[] = $filters['date_to'];
         }
-        
+
         $query .= " ORDER BY created_at DESC";
-        
+
         $logs = $this->adminLog->select($query, $params);
         $this->view('adminlogs/index', ['logs' => $logs]);
     }
@@ -98,7 +99,7 @@ class AdminLogsController extends Controller
     public function statistics()
     {
         $stats = $this->adminLog->select("SELECT action_type, COUNT(*) as count FROM admin_logs GROUP BY action_type");
-        
+
         // Nếu là AJAX request, trả về nội dung không có layout
         if (isset($_GET['ajax'])) {
             echo '<table class="table table-bordered table-hover">
@@ -109,19 +110,19 @@ class AdminLogsController extends Controller
                     </tr>
                 </thead>
                 <tbody>';
-            
+
             foreach ($stats as $row) {
                 echo '<tr>
                     <td>' . $row['action_type'] . '</td>
                     <td>' . $row['count'] . '</td>
                 </tr>';
             }
-            
+
             echo '</tbody>
             </table>';
             exit;
         }
-        
+
         // Nếu không phải AJAX, redirect về trang chính
         $this->redirect('/adminlogs');
     }
