@@ -29,13 +29,13 @@
                 <td class="text-center"><?= $i + 1 ?></td>
                 <td><?= htmlspecialchars($reader['name']) ?></td>
                 <td><?= htmlspecialchars($reader['phone']) ?></td>
-                <td class="text-center" ><?php if(!empty($reader['borrowcount'])): ?>
-                    <?= htmlspecialchars($reader['borrowcount']) ?>
+                <td class="text-center" ><?php if(!empty($reader['borrow_count'])): ?>
+                    <?= htmlspecialchars($reader['borrow_count']) ?>
                     <?php else: ?>
                         0
                     <?php endif; ?></td>
-                <td class="text-center"><?php if(!empty($reader['bookcount'])): ?>
-                    <?= htmlspecialchars($reader['bookcount']) ?>
+                <td class="text-center"><?php if(!empty($reader['book_count'])): ?>
+                    <?= htmlspecialchars($reader['book_count']) ?>
                     <?php else: ?>
                         0
                     <?php endif; ?>

@@ -58,84 +58,123 @@ class BorrowSlipsController extends BaseAuthController
         ]);
     }
 
-    public function insert()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $db = \App\Core\Database::getInstance()->getConnection();
-            $db->beginTransaction();
-            try {
-                $phone = $_POST['phone'] ?? '';
-                $reader_name = $_POST['reader_name'] ?? '';
-                $due_date = $_POST['due_date'] ?? '';
-                $readerModel = new \App\Models\Readers();
-                $reader = $readerModel->getReaderByPhone($phone);
-                if ($reader && !empty($reader['data'])) {
+public function insert()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $db = \App\Core\Database::getInstance()->getConnection();
+        $db->beginTransaction();
+        try {
+            $phone = $_POST['phone'] ?? '';
+            $reader_name = $_POST['reader_name'] ?? '';
+            $due_date = $_POST['due_date'] ?? '';
+            $readerModel = new \App\Models\Readers();
+            $reader = $readerModel->getReaderByPhone($phone);
+            
+            if ($reader && !empty($reader['data'])) {
+                $reader_id = $reader['data']['id'];
+            } else {
+                $create = $readerModel->createReader([
+                    'name' => $reader_name,
+                    'phone' => $phone
+                ]);
+                if ($create['status']) {
+                    $reader = $readerModel->getReaderByPhone($phone);
                     $reader_id = $reader['data']['id'];
                 } else {
-                    $create = $readerModel->createReader([
-                        'name' => $reader_name,
-                        'phone' => $phone
-                    ]);
-                    if ($create['status']) {
-                        $reader = $readerModel->getReaderByPhone($phone);
-                        $reader_id = $reader['data']['id'];
-                    } else {
-                        $db->rollBack();
-                        Session::flash('message', 'Không thể tạo độc giả mới!');
-                        Session::flash('status', false);
-                        $message = Session::flash('message');
-                        $status = Session::flash('status');
-                        $this->view('home/home', [
-                            'message' => $message !== null ? $message : ($result['message'] ?? ''),
-                            'status' => $status !== null ? $status : ($result['status'] ?? null)
-                        ]);
-                        exit;
-                    }
-                }
-                $data = [
-                    'reader_id' => $reader_id,
-                    'due_date' => $due_date,
-                    'phone' => $reader['data']['phone']
-                ];
-                $result = $this->borrowSlip->createBorrowSlip($data);
-                if ($result['status']) {
-                    $borrow_slip_id = $this->borrowSlip->getLastInsertId();
-                    $book_ids = isset($_POST['book_ids']) ? explode(',', $_POST['book_ids']) : [];
-                    foreach ($book_ids as $book_id) {
-                        if ($book_id) {
-                            $query = "INSERT INTO borrow_slip_details (borrow_slip_id, book_id, quantity, due_date) VALUES (?, ?, 1, ?)";
-                            $this->borrowSlip->insert($query, [$borrow_slip_id, $book_id, $due_date]);
-                        }
-                    }
-                    $this->logCrudAction('CREATE', 'borrow_slips', null, null, $data);
-                    $db->commit();
-                } else {
                     $db->rollBack();
+                    Session::flash('message', 'Không thể tạo độc giả mới!');
+                    Session::flash('status', false);
+                    $message = Session::flash('message');
+                    $status = Session::flash('status');
+                    $this->view('home/home', [
+                        'message' => $message !== null ? $message : ($result['message'] ?? ''),
+                        'status' => $status !== null ? $status : ($result['status'] ?? null)
+                    ]);
+                    exit;
                 }
+            }
+            
+            $data = [
+                'reader_id' => $reader_id,
+                'due_date' => $due_date,
+                'phone' => $reader['data']['phone']
+            ];
+            
+            $result = $this->borrowSlip->createBorrowSlip($data);
+            if ($result['status']) {
+                $borrow_slip_id = $this->borrowSlip->getLastInsertId();
+                $book_ids = isset($_POST['book_ids']) ? explode(',', $_POST['book_ids']) : [];
+                foreach ($book_ids as $book_id) {
+                    if ($book_id) {
+                        $query = "INSERT INTO borrow_slip_details (borrow_slip_id, book_id, quantity, due_date) VALUES (?, ?, 1, ?)";
+                        $this->borrowSlip->insert($query, [$borrow_slip_id, $book_id, $due_date]);
+                    }
+                }
+                $this->logCrudAction('CREATE', 'borrow_slips', null, null, $data);
+                $db->commit();
+                
                 Session::flash('message', 'Tạo phiếu mượn thành công!');
                 Session::flash('status', true);
-                header('Location: ' . '/');
-                // $message = Session::flash('message');
-                // $status = Session::flash('status');
-                // $this->view('home/home', [
-                //     'message' => $message !== null ? $message : ($result['message'] ?? ''),
-                //     'status' => $status !== null ? $status : ($result['status'] ?? null)
-                // ]);
-                exit;
-            } catch (\Exception $e) {
+            } else {
                 $db->rollBack();
-                Session::flash('message', 'Lỗi hệ thống: ');
+                // Chỉ hiển thị message từ Model, đã được làm sạch
+                Session::flash('message', $result['message'] ?? 'Không thể tạo phiếu mượn!');
                 Session::flash('status', false);
-                $message = Session::flash('message');
-                $status = Session::flash('status');
-                $this->view('home/home', [
-                    'message' => $message !== null ? $message : ($result['message'] ?? ''),
-                    'status' => $status !== null ? $status : ($result['status'] ?? null)
-                ]);
-                exit;
             }
+            
+            $message = Session::flash('message');
+            $status = Session::flash('status');
+            $this->view('home/home', [
+                'message' => $message !== null ? $message : ($result['message'] ?? ''),
+                'status' => $status !== null ? $status : ($result['status'] ?? null)
+            ]);
+            exit;
+            
+        } catch (\PDOException $e) {
+            $db->rollBack();
+            
+            // Bắt lỗi từ trigger - kiểm tra SQLSTATE và message
+            if ($e->getCode() == '45000' || strpos($e->getMessage(), 'VALIDATION_ERROR') !== false) {
+                // Lỗi validation từ trigger
+                $error_message = $e->getMessage();
+                // Loại bỏ prefix "VALIDATION_ERROR: " nếu có
+                $error_message = str_replace('VALIDATION_ERROR: ', '', $error_message);
+                // Loại bỏ thông tin technical không cần thiết
+                $error_message = preg_replace('/SQLSTATE\[.*?\]: /', '', $error_message);
+                
+                Session::flash('message', $error_message);
+                Session::flash('status', false);
+            } else {
+                // Lỗi database khác - chỉ hiển thị message chung
+                Session::flash('message', 'Có lỗi xảy ra khi tạo phiếu mượn!');
+                Session::flash('status', false);
+            }
+            
+            $message = Session::flash('message');
+            $status = Session::flash('status');
+            $this->view('home/home', [
+                'message' => $message !== null ? $message : '',
+                'status' => $status !== null ? $status : false
+            ]);
+            exit;
+            
+        } catch (\Exception $e) {
+            $db->rollBack();
+            
+            // Chỉ hiển thị message chung, không hiển thị chi tiết lỗi
+            Session::flash('message', 'Có lỗi hệ thống xảy ra!');
+            Session::flash('status', false);
+            $message = Session::flash('message');
+            $status = Session::flash('status');
+            
+            $this->view('home/home', [
+                'message' => $message !== null ? $message : '',
+                'status' => $status !== null ? $status : false
+            ]);
+            exit;
         }
     }
+}
 
     public function update($id)
     {
