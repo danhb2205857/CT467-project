@@ -4,9 +4,12 @@ namespace App\Controllers;
 use App\Core\Session;
 use App\Controllers\BaseAuthController;
 use App\Models\Dashboard;
+use App\Traits\ExcelExportTrait;
 
 class DashboardController extends BaseAuthController
 {
+    use ExcelExportTrait;
+    
     public function index()
     {
         Session::checkSession('admin');
@@ -20,5 +23,13 @@ class DashboardController extends BaseAuthController
             'top10Books' => $dashboard->getTop10Books(),
         ];
         $this->view('dashboard', $data);
+    }
+    
+    /**
+     * Xuất Excel từ Dashboard (xuất danh sách phiếu mượn)
+     */
+    public function exportExcel()
+    {
+        $this->exportExcel('borrowslips');
     }
 }

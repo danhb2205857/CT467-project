@@ -19,18 +19,21 @@ $router->post('/books/{id}', 'BooksController@update');
 $router->get('/books/delete/{id}', 'BooksController@delete');
 $router->get('/books/find-by-id', 'BooksController@findById');
 $router->get('/books/check-available', 'BooksController@checkAvailable');
+$router->get('/books/export-excel', 'BooksController@exportExcelBooks');
 
 // Authors
 $router->get('/authors', 'AuthorsController@index');
 $router->post('/authors', 'AuthorsController@insert');
 $router->post('/authors/{id}', 'AuthorsController@update');
 $router->get('/authors/delete/{id}', 'AuthorsController@delete');
+$router->get('/authors/export-excel', 'AuthorsController@exportExcel');
 
 // Categories
 $router->get('/categories', 'CategoriesController@index');
 $router->post('/categories', 'CategoriesController@insert');
 $router->post('/categories/{id}', 'CategoriesController@update');
 $router->get('/categories/delete/{id}', 'CategoriesController@delete');
+$router->get('/categories/export-excel', 'CategoriesController@exportExcel');
 
 // Readers
 $router->get('/readers', 'ReadersController@index');
@@ -38,6 +41,7 @@ $router->post('/readers', 'ReadersController@insert');
 $router->post('/readers/{id}', 'ReadersController@update');
 $router->get('/readers/delete/{id}', 'ReadersController@delete');
 $router->get('/readers/find-by-phone', 'ReadersController@findByPhone');
+$router->get('/readers/export-excel', 'ReadersController@exportExcel');
 
 // Borrow Slips
 $router->get('/borrowslips', 'BorrowSlipsController@index');
@@ -48,6 +52,7 @@ $router->get('/borrowslips/submit/{id}', 'BorrowSlipsController@submit');
 $router->get('/borrowslips/details/{id}', 'BorrowSlipsController@details');
 $router->post('/borrowslips/submit-book/{id}', 'BorrowSlipsController@submitBook');
 $router->post('/borrowslips/submit-all/{id}', 'BorrowSlipsController@submitAllBooks');
+$router->get('/borrow_slips/export-excel', 'BorrowSlipsController@exportExcelBorrowslip');
 
 
 // Admin Logs

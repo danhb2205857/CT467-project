@@ -65,7 +65,7 @@
                 </td>
 
                 <td class="text-center">
-                    <?php if ($slip['status'] == 0): ?>
+                    <?php if ($slip['status'] == 0 || $slip['status'] == 2): ?>
                         <a href="/borrowslips/submit/<?= $slip['id'] ?>" class="btn btn-sm btn-success" onclick="return confirm('Xác nhận đã hoàn tất phiếu mượn?')">Xác nhận</a>
                     <?php endif; ?>
                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editBorrowSlipModal"

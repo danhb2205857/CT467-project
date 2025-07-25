@@ -6,9 +6,12 @@ use App\Constants\Index;
 use App\Controllers\BaseAuthController;
 use App\Models\BorrowSlips;
 use App\Core\Session;
+use App\Traits\ExcelExportTrait;
 
 class BorrowSlipsController extends BaseAuthController
 {
+    use ExcelExportTrait;
+    
     private $borrowSlip;
 
     public function __construct()
@@ -143,7 +146,11 @@ class BorrowSlipsController extends BaseAuthController
                 'return_date' => $_POST['return_date'] ?? '',
                 'status' => $_POST['status'] ?? ''
             ];
+            $old = $this->borrowSlip->getBorrowSlipById($id)['data'] ?? null;
             $result = $this->borrowSlip->updateBorrowSlip($id, $data);
+            if ($result['status']) {
+                $this->logCrudAction('UPDATE', 'borrow_slips', $id, $old, $data);
+            }
             $slip = $this->borrowSlip->getBorrowSlipById($id);
             $this->view('borrowslip/edit', [
                 'slip' => $slip['data'] ?? null,
@@ -154,8 +161,10 @@ class BorrowSlipsController extends BaseAuthController
     }
     public function delete($id)
     {
+        $old = $this->borrowSlip->getBorrowSlipById($id)['data'] ?? null;
         $result = $this->borrowSlip->deleteBorrowSlip($id);
         if ($result['status']) {
+            $this->logCrudAction('DELETE', 'borrow_slips', $id, $old, null);
             header('Location: /borrowslips');
         }
     }
@@ -180,6 +189,30 @@ class BorrowSlipsController extends BaseAuthController
             'books' => $books ?? [],
         ]);
     }
-
+    
+    /**
+     * Xuất Excel danh sách phiếu mượn
+     */
+    public function exportExcelBorrowslip()
+    {
+        // Lấy dữ liệu với filter nếu có
+        $filters = [
+            'phone' => $_GET['phone'] ?? '',
+            'status' => $_GET['status'] ?? '',
+        ];
+        
+        $hasFilter = array_filter($filters);
+        
+        if (!empty($hasFilter)) {
+            $result = $this->borrowSlip->getFilteredBorrowSlips($filters);
+            $data = $result['data'] ?? [];
+        } else {
+            $result = $this->borrowSlip->getAllBorrowSlips();
+            $data = $result['data'] ?? [];
+        }
+        
+        // Sử dụng trait để xuất Excel
+        $this->exportExcel('borrowslips', $data);
+    }
 
 }

@@ -4,9 +4,12 @@ namespace App\Controllers;
 use App\Controllers\BaseAuthController;
 use App\Models\Readers;
 use App\Core\Session;
+use App\Traits\ExcelExportTrait;
 
 class ReadersController extends BaseAuthController
 {
+    use ExcelExportTrait;
+    
     private $reader;
 
     public function __construct()
@@ -32,6 +35,9 @@ class ReadersController extends BaseAuthController
                 'phone' => $_POST['phone'] ?? ''
             ];
             $result = $this->reader->createReader($data);
+            if ($result['status']) {
+                $this->logCrudAction('CREATE', 'readers', null, null, $data);
+            }
             Session::flash('message', $result['message']);
             Session::flash('status', $result['status']);
             header('Location: /readers');
@@ -45,7 +51,11 @@ class ReadersController extends BaseAuthController
                 'birth_date' => $_POST['birth_date'] ?? '',
                 'phone' => $_POST['phone'] ?? ''
             ];
+            $old = $this->reader->getReaderById($id)['data'] ?? null;
             $result = $this->reader->updateReader($id, $data);
+            if ($result['status']) {
+                $this->logCrudAction('UPDATE', 'readers', $id, $old, $data);
+            }
             Session::flash('message', $result['message']);
             Session::flash('status', $result['status']);
             header('Location: /readers');
@@ -53,7 +63,11 @@ class ReadersController extends BaseAuthController
         }
     }
     public function delete($id) {
+        $old = $this->reader->getReaderById($id)['data'] ?? null;
         $result = $this->reader->deleteReader($id);
+        if ($result['status']) {
+            $this->logCrudAction('DELETE', 'readers', $id, $old, null);
+        }
         Session::flash('message', $result['message']);
         Session::flash('status', $result['status']);
         header('Location: /readers');
@@ -71,4 +85,6 @@ class ReadersController extends BaseAuthController
         }
         exit;
     }
+    
+
 }

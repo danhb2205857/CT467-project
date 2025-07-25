@@ -1,12 +1,16 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Controllers\BaseAuthController;
 use App\Models\Books;
 use App\Core\Session;
+use App\Traits\ExcelExportTrait;
 
 class BooksController extends BaseAuthController
 {
+    use ExcelExportTrait;
+
     private $book;
 
     public function __construct()
@@ -152,5 +156,35 @@ class BooksController extends BaseAuthController
         $model = new \App\Models\Books();
         $available = $model->checkAvailable($id);
         $this->json(['available' => $available]);
+    }
+
+    /**
+     * Xuất Excel danh sách sách
+     */
+    public function exportExcelBooks()
+    {
+        // Lấy dữ liệu với filter nếu có
+        $filters = [
+            'title' => $_GET['title'] ?? '',
+            'author' => $_GET['author'] ?? '',
+            'category' => $_GET['category'] ?? '',
+            'publisher' => $_GET['publisher'] ?? '',
+            'publish_year' => $_GET['publish_year'] ?? '',
+            'author_id' => $_GET['author_id'] ?? '',
+            'category_id' => $_GET['category_id'] ?? '',
+        ];
+
+        $hasFilter = array_filter($filters);
+
+        if (!empty($hasFilter)) {
+            $result = $this->book->getFilteredBooks($filters);
+            $data = $result['data'] ?? [];
+        } else {
+            $result = $this->book->getAllBooks();
+            $data = $result['data'] ?? [];
+        }
+
+        // Sử dụng trait để xuất Excel
+        $this->exportExcel('books', $data);
     }
 }

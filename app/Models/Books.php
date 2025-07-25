@@ -78,14 +78,16 @@ class Books extends Model
     public function createBook($data)
     {
         try {
-            $query = 'INSERT INTO books (title, author_id, category_id, publish_year, publisher, quantity) VALUES (:title, :author_id, :category_id, :publish_year, :publisher, :quantity)';
+            $query = 'INSERT INTO books (title, author_id, category_id, publish_year, publisher, quantity, available) VALUES (:title, :author_id, :category_id, :publish_year, :publisher, :quantity, :available)';
             $params = [
                 'title' => $data['title'],
                 'author_id' => $data['author_id'],
                 'category_id' => $data['category_id'],
                 'publish_year' => $data['publish_year'],
                 'publisher' => $data['publisher'],
-                'quantity' => $data['quantity']
+                'quantity' => $data['quantity'],
+                'available' => $data['quantity'],
+                
             ];
             $result = $this->insert($query, $params);
             if ($result) {

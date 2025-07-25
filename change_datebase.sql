@@ -141,3 +141,84 @@ BEGIN
     RETURN IFNULL(available_count, 0);
 END$$
 DELIMITER ;
+
+
+-- Trigger cho bảng books
+DELIMITER $$
+CREATE TRIGGER trg_before_insert_books_auto_id
+BEFORE INSERT ON books
+FOR EACH ROW
+BEGIN
+    DECLARE max_id INT DEFAULT 0;
+    
+    -- Chỉ tạo ID mới nếu NEW.id là NULL hoặc 0
+    IF NEW.id IS NULL OR NEW.id = 0 THEN
+        SELECT IFNULL(MAX(id), 0) + 1 INTO max_id FROM books;
+        SET NEW.id = max_id;
+    END IF;
+END$$
+DELIMITER ;
+
+-- Trigger cho bảng authors
+DELIMITER $$
+CREATE TRIGGER trg_before_insert_authors_auto_id
+BEFORE INSERT ON authors
+FOR EACH ROW
+BEGIN
+    DECLARE max_id INT DEFAULT 0;
+    
+    -- Chỉ tạo ID mới nếu NEW.id là NULL hoặc 0
+    IF NEW.id IS NULL OR NEW.id = 0 THEN
+        SELECT IFNULL(MAX(id), 0) + 1 INTO max_id FROM authors;
+        SET NEW.id = max_id;
+    END IF;
+END$$
+DELIMITER ;
+
+-- Trigger cho bảng readers
+DELIMITER $$
+CREATE TRIGGER trg_before_insert_readers_auto_id
+BEFORE INSERT ON readers
+FOR EACH ROW
+BEGIN
+    DECLARE max_id INT DEFAULT 0;
+    
+    -- Chỉ tạo ID mới nếu NEW.id là NULL hoặc 0
+    IF NEW.id IS NULL OR NEW.id = 0 THEN
+        SELECT IFNULL(MAX(id), 0) + 1 INTO max_id FROM readers;
+        SET NEW.id = max_id;
+    END IF;
+END$$
+DELIMITER ;
+
+-- Trigger cho bảng categories
+DELIMITER $$
+CREATE TRIGGER trg_before_insert_categories_auto_id
+BEFORE INSERT ON categories
+FOR EACH ROW
+BEGIN
+    DECLARE max_id INT DEFAULT 0;
+    
+    -- Chỉ tạo ID mới nếu NEW.id là NULL hoặc 0
+    IF NEW.id IS NULL OR NEW.id = 0 THEN
+        SELECT IFNULL(MAX(id), 0) + 1 INTO max_id FROM categories;
+        SET NEW.id = max_id;
+    END IF;
+END$$
+DELIMITER ;
+
+-- Trigger cho bảng admins
+DELIMITER $$
+CREATE TRIGGER trg_before_insert_admins_auto_id
+BEFORE INSERT ON admins
+FOR EACH ROW
+BEGIN
+    DECLARE max_id INT DEFAULT 0;
+    
+    -- Chỉ tạo ID mới nếu NEW.id là NULL hoặc 0
+    IF NEW.id IS NULL OR NEW.id = 0 THEN
+        SELECT IFNULL(MAX(id), 0) + 1 INTO max_id FROM admins;
+        SET NEW.id = max_id;
+    END IF;
+END$$
+DELIMITER ;

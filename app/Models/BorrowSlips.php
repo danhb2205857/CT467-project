@@ -32,20 +32,12 @@ class BorrowSlips extends Model
           LEFT JOIN readers r ON bs.reader_id = r.id
           ORDER BY 
             CASE 
-              WHEN bs.status = 2 THEN 2
-              WHEN bs.status = 0 THEN 1
-              WHEN bs.status = 1 THEN 0
-              ELSE 3
+              WHEN bs.status = "2" THEN 1
+              WHEN bs.status = "0" THEN 2  
+              WHEN bs.status = "1" THEN 3
+              ELSE 4
             END,
-            CASE 
-              WHEN bs.status = 1 THEN bs.return_date
-              ELSE NULL
-            END,
-            CASE 
-              WHEN bs.status = 0 THEN bs.borrow_date
-              ELSE NULL
-            END
-             DESC';
+            bs.created_at DESC';
             $data = $this->select($query);
             return [
                 'status' => true,
@@ -239,6 +231,17 @@ class BorrowSlips extends Model
             if ($where) {
                 $sql .= ' WHERE ' . implode(' AND ', $where);
             }
+            
+            // Áp dụng cùng logic sắp xếp như getAllBorrowSlips
+            $sql .= ' ORDER BY 
+                CASE 
+                  WHEN bs.status = "2" THEN 1  -- Quá hạn hiển thị đầu tiên
+                  WHEN bs.status = "0" THEN 2  -- Đang mượn hiển thị thứ 2
+                  WHEN bs.status = "1" THEN 3  -- Đã trả hiển thị cuối cùng
+                  ELSE 4
+                END,
+                bs.created_at DESC';
+                
             $data = $this->select($sql, $params);
             return [
                 'status' => true,

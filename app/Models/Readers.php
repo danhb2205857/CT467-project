@@ -25,7 +25,18 @@ class Readers extends Model
     public function getAllReaders()
     {
         try {
-            $query = "SELECT * FROM readers";
+            $query = "SELECT 
+                        r.id,
+                        r.name,
+                        r.phone,
+                        r.birth_date,
+                        COUNT(DISTINCT bs.id) as borrow_count,
+                        COALESCE(SUM(bsd.quantity), 0) as book_count
+                      FROM readers r
+                      LEFT JOIN borrow_slips bs ON r.id = bs.reader_id
+                      LEFT JOIN borrow_slip_details bsd ON bs.id = bsd.borrow_slip_id
+                      GROUP BY r.id, r.name, r.phone, r.birth_date
+                      ORDER BY borrow_count DESC, book_count DESC";
             $data = $this->select($query);
             return [
                 'status' => true,
